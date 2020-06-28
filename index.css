@@ -1,0 +1,52 @@
+body{
+  margin:0 0;
+}
+.cardnav {width:100%;position: sticky;top:0px;}
+.dictpanel {position:sticky;top:0px;}
+.candidates{font-size:90%;font-family:Tahoma;padding-bottom: 5px;
+  padding-top:5px;overflow-y: scroll;max-height: 10em;
+  background-color: silver;cursor:pointer;z-index: 999}
+.floatright{float:right;}
+input.cap {width:6em;font-size:90%;font-family: Tahoma;}
+input.headword {width:18em;font-size:90%;font-family: Tahoma;}
+.citation {font-family:Consolas;color:blue;}
+.citation:hover {text-decoration: underline;cursor:pointer;}
+.highlightx0{background-color: yellow}
+.highlight{background-color: lightblue}
+.panel{background-color: silver}
+.abbr {color:blue;font-family: Tahoma}
+.notdictword{color:gray;cursor:auto;}
+.card {display:block;margin-left:1em;overflow-y: scroll;
+	margin-top:0.5em;margin-bottom:0.5em;margin-right:3px;
+	border:1px dotted #1C6EA4}
+
+#app {
+  display: flex;
+  flex-direction: row;
+}
+.maintext {font-family: Tahoma}
+.dicttext {}
+.entry {font-size:150%;font-family: Tahoma}
+#app .left-container {
+  width: 60%;
+  height:100vh;
+}
+
+#app .maintext-container {
+  width: 100%;
+  height:60%;
+  overflow-y:scroll;
+}
+#app .auxtext-container {
+  width: 100%;
+  height:40%;
+  background:yellow;
+  overflow-y:scroll;
+}
+#app .ped-container {
+  background-color: #DFDFDF;
+  flex: auto;
+  width:40%;
+  height:100vh;
+  overflow-y:scroll;
+}

@@ -1,0 +1,13 @@
+*.7z
+*.zip
+*.xml
+*.txt
+*.pdf
+*.sql
+*.json
+pts
+ped
+scan
+vue.js
+vuex.js
+bundle.js
