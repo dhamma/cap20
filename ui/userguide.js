@@ -1,15 +1,17 @@
-const guide=`　PTS reader with PED 
-DoubleClick a word or select partially to check dictionary
+const guide=`　
+　
+Computer Aided Pariyatti ver.2020
+DoubleClick a word to check dictionary
 
 Pāḷi Diacritic keys (Velthius compatible)
   aa=ā | .n=zn=ṇ | "n=qn=;n=ṅ | ~n=,n=wn=ñ
 
 Data Source:
 Pali English Dictionary, maintained by suttacentral.
-PTS  Tipitaka, input by Dhammakaya Foundation, 
-All datafile included are released under Creative Commons Zero.
 
-Source code and issue report: https://github.com/dhamma/ptsed/
+Datafiles are released under Creative Commons Zero.
+
+Source code and issue report: https://github.com/dhamma/cap20/
 Abbriviations:
 `.split(/\n/);
 const abbrs={

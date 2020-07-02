@@ -1,6 +1,14 @@
 'use strict';
-const {readlines,parseCAP,palialpha}=require("pengine")
-const _state = {
+const {readlines,parseCAP,palialpha}=require("pengine");
+const {getnotes}=require("./notes");
+const _state0 = {
+  keep:false,
+  history:[],
+  cap:null,
+  texts:[],
+  highlightword:''
+} 
+const _state1 = {
   keep:false,
   history:[],
   cap:null,
@@ -26,6 +34,7 @@ const getters = {
  ,highlightword:state=>state.highlightword
  ,capstr:state=> state.cap?state.cap.stringify():''
  ,texts: state=>state.texts
+ ,notes: state=>getnotes(state.texts)
 }
 const actions = {
  setCap: ({commit,state},cap)=>{
@@ -74,8 +83,13 @@ const actions = {
  	dispatch("setCap",newcap);
  }
 }
-const ptsstore = new Vuex.Store({
- state:_state,
+const mainstore = new Vuex.Store({
+ state:_state0,
+ getters, mutations, actions
+})
+
+const auxstore = new Vuex.Store({
+ state:_state1,
  getters, mutations, actions
 })
 
@@ -83,4 +97,5 @@ const dictstore = new Vuex.Store({
  state:_state2,
  getters, mutations, actions
 })
-module.exports={ptsstore,dictstore}
+const stores={mainstore,auxstore,dictstore};
+module.exports={mainstore,auxstore,dictstore,stores}

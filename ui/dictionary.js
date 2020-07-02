@@ -87,7 +87,8 @@ const renderline=(h,item)=>{
 	let lastidx=0;
 	const title=dictstore.getters.cap.stringify();
 	if (text[0]=="㊔") {
-		headword=text.substr(2);
+		const m=text.match(/[\d]+-/);
+		headword=text.substr(2+m[0].length);
 		return h("div",{class:"entry",attrs:{title}},headword);
 	}
 
@@ -105,7 +106,7 @@ const renderline=(h,item)=>{
 
 	const capx0=dictstore.getters.cap.x0;
 
-	return h("div",{class:x0==capx0?"highlightx0":""},children);
+	return h("div",{class:x0==capx0?"highlightx0":"linediv_dict"},children);
 }
 const Candidates=Vue.extend({
 	props:{
@@ -197,7 +198,7 @@ Vue.component("DictionaryContainer",{
   functional:true,
   render(h) { //eslint-disable-line
   		const texts=dictstore.getters.texts;
-  		return  h("div",{},
+  		return  h("div",{class:"dictionarytext"},
  				[h(DictionaryPanel),
  				texts.length?
  				h(NestedCard,{props:{texts}}):h("UserGuide")

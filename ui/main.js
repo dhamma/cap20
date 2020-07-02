@@ -1,42 +1,32 @@
-const {ptsstore}=require("../store");
+const {stores}=require("../store");
 const bus=require("./eventbus");
 const {getselection}=require("./selection");
-const checkselection=(event)=>{
+const {NOTESEP}=require("pengine");
+const {decorateLine}=require("./decorate");
+const checkselection=function(event){
 	const sel=getselection();
 	if (!sel)return;
 	const t=getselection().trim();
 	if (t&&t.indexOf(" ")==-1) {
-		ptsstore.dispatch("keep");
+		this.dispatch("keep");
 		bus.$emit("settofind",t);
 	}
-
 }
-const renderline=(h,line)=>{
- 	let hlw=ptsstore.getters.highlightword;
-  	let prev=0;
-  	const children=[];
-
- 	if (hlw) {
-	 	hlw=hlw.substr(0,hlw.length-1)+".";
- 		hlw=hlw.replace(/ṅ/g,'[ṃnṅ]');
- 		hlw=hlw.replace(/[āa]/g,'[āa]');
- 		hlw=hlw.replace(/[ūu]/g,'[ūu]');
- 		hlw=hlw.replace(/[īi]/g,'[īi]');
-	  	const regex=new RegExp(hlw,"gi");
-	  	
-	  	line.replace(regex,(m,idx)=>{
-	  		children.push(h('span', line.substring(prev,idx) ));
-	  		children.push(h('span',{class:"highlight"} ,line.substr(idx,m.length) ));
-	  		prev=idx+m.length;
-	  	})
-  	}
-
-	children.push(h('span', line.substr(prev) ));
-
-  	return h("div",children);
+const renderline=(store,h,x0,text)=>{
+	const at=text.indexOf(NOTESEP);
+	if (at>0) text=text.substr(0,at);
+	
+	const decorated=decorateLine({h,x0,text,store});
+	return h('div',{class:"linediv",attrs:{x0}},decorated);
 }
 Vue.component("maintext",{
- // functional:true,
+	props:{
+		thestore:{type:String,required:true}
+	},
+	data(){
+		const store=stores[this.thestore];
+		return {store};
+	},
 	updated(){
 		const ele=document.getElementsByClassName("pts-container")[0];
 		const arr=document.getElementsByClassName("highlight");
@@ -47,9 +37,10 @@ Vue.component("maintext",{
 			ele.scrollTop=0;
 		}
 	},
-	render(h) { //eslint-disable-line
-  		const children=ptsstore.getters.texts.map(line=>renderline(h,line[1]))
-
- 		return  h("div",{class:"maintext",on:{mouseup:checkselection}},children);
+	render(h) {
+		const store=this.store;
+  		const children=store.getters.texts.map(line=>renderline(store,h,line[0],line[1]))
+ 		return  h("div",{class:"maintext",
+ 			on:{mouseup:checkselection.bind(store)}},children);
 	}
 });

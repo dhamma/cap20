@@ -1,11 +1,12 @@
 body{
   margin:0 0;
 }
+
 .cardnav {width:100%;position: sticky;top:0px;}
 .dictpanel {position:sticky;top:0px;}
 .candidates{font-size:90%;font-family:Tahoma;padding-bottom: 5px;
   padding-top:5px;overflow-y: scroll;max-height: 10em;
-  background-color: silver;cursor:pointer;z-index: 999}
+  background-color: white ;cursor:pointer;z-index: 99}
 .floatright{float:right;}
 input.cap {width:6em;font-size:90%;font-family: Tahoma;}
 input.headword {width:18em;font-size:90%;font-family: Tahoma;}
@@ -20,11 +21,17 @@ input.headword {width:18em;font-size:90%;font-family: Tahoma;}
 	margin-top:0.5em;margin-bottom:0.5em;margin-right:3px;
 	border:1px dotted #1C6EA4}
 
+.nti {font-weight: bold}
+.gatha {color:brown;}
+.linediv {border-bottom:solid 1px #E0E0E0;}
+.linediv_dict {border-bottom:solid 1px #A0A0A0;}
+.breadcrumb {border-radius:3px;background: #7F7F7F;color:white;cursor:pointer;}
+
 #app {
   display: flex;
   flex-direction: row;
 }
-.maintext {font-family: Tahoma}
+.maintext {font-family: Tahoma; font-size:14pt;}
 .dicttext {}
 .entry {font-size:150%;font-family: Tahoma}
 #app .left-container {
@@ -40,7 +47,7 @@ input.headword {width:18em;font-size:90%;font-family: Tahoma;}
 #app .auxtext-container {
   width: 100%;
   height:40%;
-  background:yellow;
+  background:#CFCFCF;
   overflow-y:scroll;
 }
 #app .ped-container {
@@ -50,3 +57,28 @@ input.headword {width:18em;font-size:90%;font-family: Tahoma;}
   height:100vh;
   overflow-y:scroll;
 }
+
+
+
+.fullscreenpopup .ancestor{background:silver;cursor:pointer;}
+.fullscreenpopup .ancestor_active {background: yellow;cursor:pointer;}
+.tocitem{cursor:pointer;}
+.tocitem.active{background:yellow;}
+.tocitem:hover td{border-bottom:solid 1px brown}
+
+.fullscreenpopup {
+  background:rgba(0,0,0,0);
+  display: flex;
+  align-items: top;
+  justify-content: left;
+  position: fixed;
+  top:1em;
+  left:1em;
+  width:100%;
+  height:100%;
+  z-index: 999;
+}
+.popupcontent{width:50%;height:15em;
+  overflow-y: scroll; border: dotted silver 1px;
+  background:rgba(255,255,255,0.9);
+  box-shadow:  2px 2px 4px 4px #AAAAAA;}

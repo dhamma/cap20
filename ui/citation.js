@@ -43,8 +43,10 @@ Vue.component("citation",{
 	},
 	render(h){
 		const oricites=this.label.split(/[ ;]/);
-		const ptscites=transpos(this.label);
+		
+		return h("span",{class:"citation"},this.label);
 
+		const ptscites=transpos(this.label);
 		const children=ptscites.map((cite,idx)=>{
 			if (oricites[idx]!==cite){
 				return h("span",{class:"citation",on:{click:this.gopts}},cite+" ")
