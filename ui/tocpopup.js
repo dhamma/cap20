@@ -119,7 +119,7 @@ Vue.component('tocitempopup',{
 			if (t=="-") return null;
 			return h("span",{class:cls,
 				attrs:{title,depth:item.d},
-				on:{click:this.changedepth}},"/"+t);
+				on:{click:this.changedepth}},((item.d>1)?"／":"")+t);
 		}).filter(item=>item);
 		ancestorspan.push(h("button",{attrs:{linkto:curitem.l},
 			on:{click:this.quickselect}},"→"));

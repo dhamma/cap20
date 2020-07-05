@@ -1,6 +1,7 @@
 'use strict';
 const {getancestor}=require("./tocpopup");
 const {stores}=require("../store");
+const {parseAddress}=require("../parseaddress");
 const breadcrumb=Vue.extend({
 	props:['cap','openpopup'],
 	data(){
@@ -20,7 +21,7 @@ const breadcrumb=Vue.extend({
 			if (t=="-") return null;
 			return h("span",{class:"tocitem",
 				on:{click:this.openpopup},
-				attrs:{title,depth:item.d}},"/"+t);
+				attrs:{title,depth:item.d}},((item.d>1)?"／":"")+t);
 		}).filter(item=>item);
 
 		return h("span",{class:"breadcrumb"},ancestorspan);
@@ -35,8 +36,21 @@ Vue.component("CapNav",{
 			parseInt(evt.target.attributes.idx.value))},
 		prevp:function(){this.store.dispatch("prevp")},
 		nextp:function(){this.store.dispatch("nextp")},
-		onenter:function(event){
-			this.store.dispatch("setCap",event.target.value)
+		oninput:function(event){
+			if (event.target.value!==this.address) {
+				this.address=event.target.value;
+				this.$refs.address.classList.remove("error");
+				const cap=parseAddress(event.target.value,this.cap.db);
+				if (!cap) {
+					if (event.target.value) this.$refs.address.classList.add("error");
+					return;
+				}				
+			}
+
+			if (event.key=="Enter"){
+				const cap=parseAddress(event.target.value,this.cap.db);
+				if (cap) this.store.dispatch("setCap",cap)
+			}
 		},
 		openpopup:function(event){
 			this.popupitemdepth=parseInt(event.target.attributes.depth.value);
@@ -49,7 +63,7 @@ Vue.component("CapNav",{
 	},
 	data(){
 		const store=stores[this.thestore];
-		return {store,showpopup:false,popupitemdepth:0};
+		return {store,showpopup:false,popupitemdepth:0,address:''};
 	},
 	computed:{
 		cap:function(){return this.store.getters.cap},
@@ -64,7 +78,8 @@ Vue.component("CapNav",{
 			<button @click="goback" :idx="idx">{{item.stringify()}}</button>
 		</span>
 		<button @click="prevp">‹</button>
-		<input  class="cap" v-bind:value="capstr" @keyup.enter="onenter"></input>
+		<input  class="cap" ref="address" 
+			v-bind:value="capstr" @keyup="oninput"></input>
 		<button @click="nextp">›</button>
 	</div>
 	<breadcrumb :cap="cap"  :openpopup="openpopup"/>
