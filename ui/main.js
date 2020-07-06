@@ -15,8 +15,12 @@ const checkselection=function(event){
 const renderline=(store,h,x0,text)=>{
 	const at=text.indexOf(NOTESEP);
 	if (at>0) text=text.substr(0,at);
-	
-	const decorated=decorateLine({h,x0,text,store});
+	let pts={};
+	if (store.getters.pts && store.getters.pts[x0]) {
+		pts=store.getters.pts[x0];
+	}
+	const notes=store.getters.notes||{};
+	const decorated=decorateLine({h,x0,text,notes,pts});
 	return h('div',{class:"linediv",attrs:{x0}},decorated);
 }
 Vue.component("maintext",{
@@ -39,6 +43,8 @@ Vue.component("maintext",{
 	},
 	render(h) {
 		const store=this.store;
+		const pts=JSON.stringify(store.getters.pts);
+		if (pts!=="{}")console.log(pts);
   		const children=store.getters.texts.map(line=>renderline(store,h,line[0],line[1]))
  		return  h("div",{class:"maintext",
  			on:{mouseup:checkselection.bind(store)}},children);

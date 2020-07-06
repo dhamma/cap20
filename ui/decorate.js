@@ -66,8 +66,10 @@ const addspan=({children,str,prevclass,y,h})=>{
 	return prevclass;
 }
 
-
-const decorateLine=({h,x0,text,store})=>{
+const addmarker=({children,str,y,h,cls})=>{
+	children.push(h('span',{attrs:{y},class:cls}," ["+str+"]"));
+}
+const decorateLine=({h,x0,text,notes,pts})=>{
 	const decorations=[],children=[];
 	let syl_i=0,yinc=0,y=0,off=0,j=0,nsnip=0;
 	let prevclass='',str='',ch='',marker='';
@@ -79,14 +81,11 @@ const decorateLine=({h,x0,text,store})=>{
 		paranum=decorateHeader(mheader[1],text.length,decorations);
 	}
 	const syl=syllabify(text);
-
 	
 	decorateBrace(syl,decorations);
 	const snippet=snip(text,decorations);
-
 	let sycnt=syl[0].length;
 	while(j<=text.length){
-
 		if (!sycnt) {
 			if (isSyllable(syl[syl_i]))yinc++
 			if( syl_i+1<syl.length) sycnt=syl[++syl_i].length;
@@ -111,7 +110,6 @@ const decorateLine=({h,x0,text,store})=>{
 			j+=m[1].length;
 			addspan({h,children,str,prevclass,y});
 			prevclass='';
-			const notes=store.getters.notes;
 			const props={};
 			let btns=inlinenotebtn({h,nid:m[1],note:notes[x0+"_"+m[1]],props});
 			for (let k=0;k<btns.length;k++){
@@ -120,10 +118,16 @@ const decorateLine=({h,x0,text,store})=>{
 			ch='';
 			str='';
 		}
-		if (y==marker){ //marking backlink source pos
-			children.push(h('span',{attrs:{y},class:'marker'}));
-			marker=-1;
+		if (pts[yinc]) {
+			addspan({h,children,str,prevclass,y});
+			str='';prevclass='';
+			addmarker({h,children,str:pts[yinc],y:yinc,cls:"pb"});
+			delete pts[yinc]
 		}
+		//if (y==marker){ //marking backlink source pos
+		//	children.push(h('span',{attrs:{y},class:'marker'}));
+		//	marker=-1;
+		//}
 		if (j<text.length) str+=ch;
 		j++;
 		sycnt--;

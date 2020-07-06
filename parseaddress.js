@@ -1,8 +1,8 @@
 'use strict';
 const {parseCAP}=require("pengine");
-
-const pts=(db,book,page)=>{
-		
+const {parsePTS}=require("../cs0/ptsvolpg");
+const pts=(db,addr)=>{
+	return parsePTS(addr);
 }
 
 const findNos=(from,nos,T,d,depth)=>{
@@ -46,10 +46,10 @@ const anum=(db,book,nos)=>{
 const tocstart={d:['dn1_x0',3],m:['mn1_x0',4],s:['sn1_x0',3,5],j:['ja1_x2',4]};
 
 const patterns=[
-	[/a([123456789][01]?)\.(\d+)/i,anum],
-	[/([dmj])(\d+)/i,qnum],
-	[/s(\d+\.\d+)/i,qnum2],
-	[/(\w+\d*),(\d+)/i,pts],
+	[/^a([123456789][01]?)\.(\d+)$/i,anum],
+	[/^([dmj])(\d+)$/i,qnum],
+	[/^s(\d+\.\d+)$/i,qnum2],
+	[/^(\w+\d*,\d+)$/i,pts],
 ];
 
 const parseAddress=(str,db)=>{

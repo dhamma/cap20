@@ -1,6 +1,7 @@
 'use strict';
 const {readlines,parseCAP,palialpha}=require("pengine");
 const {getnotes}=require("./notes");
+const {PTSinRange}=require("../cs0/ptsvolpg");
 const _state0 = {
   keep:false,
   history:[],
@@ -9,16 +10,20 @@ const _state0 = {
   highlightword:''
 } 
 const _state1 = {
-  keep:false,
-  history:[],
   cap:null,
   texts:[],
-  highlightword:''
+  history:[],
+  keep:false,
+  highlightword:'',
+  displayfrom:0,
+  displayline:0,
 } 
 const _state2={
-	cap:null,
-	texts:[],
-	history:[]
+  cap:null,
+  texts:[],
+	history:[],
+  displayfrom:0,
+  displayline:0,
 }
 const mutations = {
  updateCap: (state, newcap) => state.cap=newcap
@@ -26,6 +31,8 @@ const mutations = {
   ,keep:(state,keep)=>state.keep=keep
  ,updateTexts: (state,texts) =>state.texts=texts
  ,highlightword:(state,hlw)=>state.highlightword=hlw
+ ,displayline:(state,displayline)=>state.displayline=displayline
+ ,displayfrom:(state,displayfrom)=>state.displayfrom=displayfrom
 }
 
 const getters = {
@@ -35,6 +42,10 @@ const getters = {
  ,capstr:state=> state.cap?state.cap.stringify():''
  ,texts: state=>state.texts
  ,notes: state=>getnotes(state.texts)
+ ,pts: state=>{
+    if (!state.cap)return {};
+    return PTSinRange(state.cap.db,state.displayfrom,state.displayline);
+  }
 }
 const actions = {
  setCap: ({commit,state},cap)=>{
@@ -48,11 +59,19 @@ const actions = {
 		commit( "history", history);
 		commit( "keep", false);
 	}
- 	readlines(cap.db,cap.x0-cap.x,cap._w,(texts)=>{
- 		commit("updateCap",cap)
- 		commit("updateTexts",texts);
- 	})
- }
+  let from=cap.x0-cap.x,nline=cap._w;
+  if (cap.x) {
+    const n=cap.nextp();
+    from=cap.x0,nline=cap._w-cap.x+n._w;
+  }
+
+  readlines(cap.db,from,nline,(texts)=>{
+      commit("displayfrom",from);
+      commit("displayline",nline);
+      commit("updateCap",cap)
+      commit("updateTexts",texts);
+    })
+  }
  ,setHighlight:({commit,state},hlw)=>{
  	const regex=new RegExp("["+palialpha+"]","gi");
  	let s='';
