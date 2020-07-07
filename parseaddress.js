@@ -25,7 +25,8 @@ const qnum=(db,book,nos)=>{
 	const ans=db.gettocancestor(addr[0]);
 	const t=ans[ans.length-1];
 	const d=t.d+1;
-	return findNos(t.cur+1,nos,db.toc,d,addr[1]);
+	const n=findNos(t.cur+1,nos,db.toc,d,addr[1]);
+	return n;
 }
 const qnum2=(db,book,nos2)=>{
 	const addr=tocstart[book];
@@ -65,4 +66,4 @@ const parseAddress=(str,db)=>{
 	}
 	return parseCAP(str,db);
 }
-module.exports={parseAddress};
+module.exports={parseAddress,parsePTS};

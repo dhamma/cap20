@@ -81,7 +81,7 @@ const CardButton=Vue.extend({
 	}
 })
 let headword='';
-const renderline=(h,item)=>{
+const renderline=(h,item,citeclick)=>{
 	const x0=item[0],text=item[1];
 	const children=[];
 	let lastidx=0;

@@ -7,7 +7,7 @@ require("./ui/popup");
 const {mainstore,auxstore,dictstore}=require("./store");
 const {open,parseCAP,packintarr}=require("pengine");
 const quicklinks=[
-'dn2_156','sn5_421','an1_59'//,'mn1_273'
+'dn2_156','sn5_421','an1_59','mn1_273'
 ]
 new Vue({
 	//store,
@@ -15,7 +15,7 @@ new Vue({
 	state:Vuex.mapState(['cap'])
 	,mounted(){
 		open("cs0m",db=>{
-			const cap=parseCAP("mv_132",db);
+			const cap=parseCAP("an5_5",db);
 			mainstore.dispatch("setCap",cap);
 
 			const history=mainstore.getters.history;

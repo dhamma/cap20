@@ -69,7 +69,21 @@ const addspan=({children,str,prevclass,y,h})=>{
 const addmarker=({children,str,y,h,cls})=>{
 	children.push(h('span',{attrs:{y},class:cls}," ["+str+"]"));
 }
-const decorateLine=({h,x0,text,notes,pts})=>{
+const decorateHighlightword=(line,hlw,decorations)=>{
+ 	if (!hlw) return;
+
+	hlw=hlw.substr(0,hlw.length-1)+".";
+ 	hlw=hlw.replace(/ṅ/g,'[ṃnṅ]');
+ 	hlw=hlw.replace(/[āa]/g,'[āa]');
+ 	hlw=hlw.replace(/[ūu]/g,'[ūu]');
+ 	hlw=hlw.replace(/[īi]/g,'[īi]');
+	const regex=new RegExp(hlw,"gi");
+	
+	line.replace(regex,(m,idx)=>{
+	  	decorations.push([idx,m.length,"highlightword"]);
+  	})
+}
+const decorateLine=({h,x0,text,notes,pts,highlightword})=>{
 	const decorations=[],children=[];
 	let syl_i=0,yinc=0,y=0,off=0,j=0,nsnip=0;
 	let prevclass='',str='',ch='',marker='';
@@ -83,6 +97,7 @@ const decorateLine=({h,x0,text,notes,pts})=>{
 	const syl=syllabify(text);
 	
 	decorateBrace(syl,decorations);
+	decorateHighlightword(text,highlightword,decorations);
 	const snippet=snip(text,decorations);
 	let sycnt=syl[0].length;
 	while(j<=text.length){
@@ -98,6 +113,15 @@ const decorateLine=({h,x0,text,notes,pts})=>{
 			if (!prevclass) prevclass='';
 			nsnip++;
 		}
+		if (pts[yinc]) {
+			if (str) {
+				addspan({h,children,str,prevclass,y});
+				str='';
+			}
+			addmarker({h,children,str:pts[yinc],y:yinc,cls:"pb"});
+			delete pts[yinc];
+		}
+
 		if (str=='') {
 			off=j;
 			y=yinc;
@@ -118,12 +142,7 @@ const decorateLine=({h,x0,text,notes,pts})=>{
 			ch='';
 			str='';
 		}
-		if (pts[yinc]) {
-			addspan({h,children,str,prevclass,y});
-			str='';prevclass='';
-			addmarker({h,children,str:pts[yinc],y:yinc,cls:"pb"});
-			delete pts[yinc]
-		}
+
 		//if (y==marker){ //marking backlink source pos
 		//	children.push(h('span',{attrs:{y},class:'marker'}));
 		//	marker=-1;

@@ -14,7 +14,7 @@ input.error {background:pink;}
 .citation {font-family:Consolas;color:blue;}
 .citation:hover {text-decoration: underline;cursor:pointer;}
 .highlightx0{background-color: yellow}
-.highlight{background-color: lightblue}
+.highlightword{background-color: lightblue}
 .panel{background-color: silver}
 .abbr {color:blue;font-family: Tahoma}
 .notdictword{color:gray;cursor:auto;}
@@ -27,7 +27,7 @@ input.error {background:pink;}
 .linediv {border-bottom:solid 1px #E0E0E0;}
 .linediv_dict {border-bottom:solid 1px #A0A0A0;}
 .breadcrumb {border-radius:3px;background: #7F7F7F;color:white;cursor:pointer;}
-.pb{color:brown;font-size:75%;font-weight: bold}
+.pb{background-color:teal;color:white;font-size:75%;font-weight: bold}
 #app {
   display: flex;
   flex-direction: row;
