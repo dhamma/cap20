@@ -1,4 +1,4 @@
-const {stores}=require("../store");
+const {stores}=require("./store");
 const bus=require("./eventbus");
 const {getselection}=require("./selection");
 const {NOTESEP}=require("pengine");
@@ -21,7 +21,7 @@ const renderline=(store,h,x0,text)=>{
 	}
 	const highlightword=store.getters.highlightword;
 	const notes=store.getters.notes||{};
-	const decorated=decorateLine({h,x0,text,notes,pts,highlightword});
+	const decorated=decorateLine({h,x0,text,notes,pts,highlightword,store});
 	return h('div',{class:"linediv",attrs:{x0}},decorated);
 }
 Vue.component("maintext",{

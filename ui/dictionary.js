@@ -1,9 +1,10 @@
 'use strict';
-const {dictstore}=require("../store");
+const {dictstore}=require("./store");
 const {parseCAP,readlines}=require("pengine");
 const inputpali=require("./inputpali");
 const bus=require("./eventbus");
 const {listcandidate}=require("./candidate")
+const {renderDictionaryLine}=require("./dictionaryline");
 require("./citation");
 require("./userguide");
 
@@ -24,7 +25,12 @@ const NestedCard=Vue.extend({
 		}
 	},
 	render(h){
-		const children=this.texts.map(item=>renderline(h,item));
+		const children=this.texts.map(item=>{
+			const rendered=renderDictionaryLine(h,item[1]);
+			const x0=item[0];
+			const capx0=dictstore.getters.cap.x0;
+			return h("div",{class:(x0==capx0)?"highlightx0":"linediv_dict"},rendered)
+		});
 		return h("div",{class:this.depth?"card":""},
 			[
 			 this.close?h("button",{class:"floatright",on:{click:this.close}},"✖"):null,
@@ -33,81 +39,7 @@ const NestedCard=Vue.extend({
 		);
 	}
 })
-const CardButton=Vue.extend({
-	props:{
-		word:{type:String}
 
-	},
-	methods:{
-		close(){
-			this.showcard=false;
-		},
-		opencard(event){
-			const db=dictstore.getters.cap.db;
-			const headwords=db.payload;
-			const w=event.target.innerText.replace(/[\*˚\-]/,'');
-			let at=bsearch(headwords,w);
-			if (at<0)return;
-
-			while (at>0) {
-				if (headwords[at-1]==w) at--;
-				else break;
-			}
-
-			const headwordx0=db.extra.headwordx0;
-			const cap=parseCAP(headwordx0[at],db);
-
-			const self=this;
-		 	readlines(cap.db,cap.x0-cap.x,cap._w,(texts)=>{
-		 		self.texts=texts;
-		 		self.showcard=true;
-		 	})
-		}
-	},
-	data(){
-		return {texts:[],showcard:false}
-	},
-	render(h){
-		if (this.showcard) {
-			return h(NestedCard,{props:{depth:1,texts:this.texts,close:this.close}})
-		} else {
-			const words=this.word.split(/([ ,])/);
-			const children=words.map(w=>{
-				return w.match(/[ ,]/)?h("span",w):
-			    h("a",{attrs:{href:"#"},on:{click:this.opencard}},w)
-			})
-			return h("span",children);
-		}
-	}
-})
-let headword='';
-const renderline=(h,item,citeclick)=>{
-	const x0=item[0],text=item[1];
-	const children=[];
-	let lastidx=0;
-	const title=dictstore.getters.cap.stringify();
-	if (text[0]=="㊔") {
-		const m=text.match(/[\d]+-/);
-		headword=text.substr(2+m[0].length);
-		return h("div",{class:"entry",attrs:{title}},headword);
-	}
-
-	text.replace(/[@\^]\[(.+?)\]/g,(m,m1,idx)=>{
-		const s=text.substring(lastidx,idx);
-		if (s) children.push( h("span",s));
-		lastidx=idx+m.length;
-		if (m[0]=="^") {
-			children.push(h(CardButton,{props:{word:m1}}));
-		} else {
-			children.push(h("citation",{props:{label:m1,headword}}));			
-		}
-	})
-	children.push( h("span", text.substr(lastidx)));
-
-	const capx0=dictstore.getters.cap.x0;
-
-	return h("div",{class:x0==capx0?"highlightx0":"linediv_dict"},children);
-}
 const Candidates=Vue.extend({
 	props:{
 		selectCandidate:{type:Function},

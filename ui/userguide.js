@@ -1,3 +1,4 @@
+const {renderDictionaryLine}=require("./dictionaryline");
 const guide=`　
 　
 Computer Aided Pariyatti ver.2020
@@ -12,11 +13,23 @@ Pali English Dictionary, maintained by suttacentral.
 Datafiles are released under Creative Commons Zero.
 
 Source code and issue report: https://github.com/dhamma/cap20/
-Abbriviations:
+
+d(nos)            , d16=Mahāparinibbānasuttaṃ
+m(nos)            , m26=Pāsarāsisuttaṃ
+s(saṃyutta).(nos) , s56.11=Dhammacakkappavattana
+a(nipāta).(nos)   , a2.21=Sunikkhittassa 
+j(jātaka)         , j6=Devadhammajātakaṃ
+vv(vatthu).(gatha), vv51.2=Maṇḍūkohaṃ(gatha 858)
+
 `.split(/\n/);
+
+const testptslink=`
+	@[Vin.iii.3]
+
+
+`
 const abbrs={
-	mv:"MahaVagga",'vb1~vb2':"SuttaVibhaṅga",
-cv:"CūḷaVagga", pvr:'Parivāra', 
+mv:"MahaVagga",cv:"CūḷaVagga", pj:"Pārājika",pc:"Pācittiya",pvr:'Parivāra', 
 'dn1~dn3':'DīghaNikaya','mn1~mn3':'MajjhimaNikaya',
 'sn1~sn5':'SaṃyuttaNikaya' , 'an1~an5':'AṅguttaraNikaya',
 kp:'KhuddaKapāṭha', dhp:'DhammaPada', ud:'Udāna', iti:'ItiVuttaka' ,
@@ -34,11 +47,15 @@ Vue.component("UserGuide",{
 		const abbriviations=[];
 		const children=guide.map(line=>h("div",line));
 		
-		for (var i in abbrs) {
-			abbriviations.push(h("span",{class:"abbr"},i+" "));
-			abbriviations.push(h("span",abbrs[i]+", "));
-		}
-		children.push(h("div",abbriviations));
+		const rendered=testptslink.split(/\n/).map(
+			line=>h("div",renderDictionaryLine(h,line))
+		)
+		//for (var i in abbrs) {
+		//	abbriviations.push(h("span",{class:"abbr"},i+" "));
+		//	abbriviations.push(h("span",abbrs[i]+", "));
+		//}
+		children.push(h("div",rendered));
+		
 		return h("div",{},children);
 	}
 })

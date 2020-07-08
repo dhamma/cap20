@@ -1,6 +1,6 @@
 'use strict';
 const {getancestor}=require("./tocpopup");
-const {stores}=require("../store");
+const {stores}=require("./store");
 const {parseAddress}=require("../parseaddress");
 const breadcrumb=Vue.extend({
 	props:['cap','openpopup'],
@@ -27,6 +27,13 @@ const breadcrumb=Vue.extend({
 		return h("span",{class:"breadcrumb"},ancestorspan);
 	}
 });
+const parseAddr=(addr,db)=>{
+	let cap=parseAddress(addr,db);
+	if (typeof cap=="string") { //convert to cap or qnum
+		 cap=parseAddress(cap,db);
+	}
+	return cap;
+}
 Vue.component("CapNav",{
 	props:{
 		thestore:{type:String,required:true}
@@ -40,7 +47,7 @@ Vue.component("CapNav",{
 			if (event.target.value!==this.address) {
 				this.address=event.target.value;
 				this.$refs.address.classList.remove("error");
-				const cap=parseAddress(event.target.value,this.cap.db);
+				const cap=parseAddr(this.address,this.cap.db);
 				if (!cap) {
 					if (event.target.value) this.$refs.address.classList.add("error");
 					return;
@@ -48,7 +55,7 @@ Vue.component("CapNav",{
 			}
 
 			if (event.key=="Enter"){
-				const cap=parseAddress(event.target.value,this.cap.db);
+				const cap=parseAddr(event.target.value,this.cap.db);
 				if (cap) this.store.dispatch("setCap",cap)
 			}
 		},

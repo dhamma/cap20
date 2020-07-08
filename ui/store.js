@@ -1,7 +1,7 @@
 'use strict';
 const {readlines,parseCAP,palialpha}=require("pengine");
 const {getnotes}=require("./notes");
-const {PTSinRange}=require("../cs0/ptsvolpg");
+const {PTSinRange}=require("../../cs0/ptsvolpg");
 const _state0 = {
   keep:false,
   history:[],

@@ -1,6 +1,6 @@
 'use strict';
 const {syllabify,isSyllable}=require("pengine");
-const {inlinenotebtn}=require("./inlinebuttons");
+const {inlinenotebuttons,ButtonPara}=require("./inlinebuttons");
 
 const snip=(str,decoration)=>{
 	const arr=[];
@@ -83,7 +83,7 @@ const decorateHighlightword=(line,hlw,decorations)=>{
 	  	decorations.push([idx,m.length,"highlightword"]);
   	})
 }
-const decorateLine=({h,x0,text,notes,pts,highlightword})=>{
+const decorateLine=({h,x0,text,notes,pts,highlightword,store})=>{
 	const decorations=[],children=[];
 	let syl_i=0,yinc=0,y=0,off=0,j=0,nsnip=0;
 	let prevclass='',str='',ch='',marker='';
@@ -135,7 +135,7 @@ const decorateLine=({h,x0,text,notes,pts,highlightword})=>{
 			addspan({h,children,str,prevclass,y});
 			prevclass='';
 			const props={};
-			let btns=inlinenotebtn({h,nid:m[1],note:notes[x0+"_"+m[1]],props});
+			let btns=inlinenotebuttons({h,nid:m[1],note:notes[x0+"_"+m[1]],props});
 			for (let k=0;k<btns.length;k++){
 				children.push(btns[k]);
 			}
@@ -143,17 +143,15 @@ const decorateLine=({h,x0,text,notes,pts,highlightword})=>{
 			str='';
 		}
 
-		//if (y==marker){ //marking backlink source pos
-		//	children.push(h('span',{attrs:{y},class:'marker'}));
-		//	marker=-1;
-		//}
 		if (j<text.length) str+=ch;
 		j++;
 		sycnt--;
 	}
 	addspan({h,children,str,y,prevclass});
 
-	if (paranum) children.unshift(h("span",paranum+"."))
+	if (paranum) {
+		children.unshift(h(ButtonPara,{props:{paranum,store}}))
+	}
 	return children;
 }
 module.exports={decorateLine};

@@ -1,6 +1,27 @@
 'use strict';
+const {mainstore,auxstore,stores}=require("./store")
+const {parseCAP}=require("pengine");
+const {getRefBook}=require("../../cs0/ptsvolpg");
 
-const inlinenotebtn=({h,cap,nid,note,forwardlink,props})=>{
+const ButtonPara=Vue.extend({
+	methods:{
+		click(evt){
+			const ele=evt.target;
+			const targetstore=stores[ele.attributes.showin.value];
+			const addr=getRefBook(this.store.getters.cap.bk)+"_"+ele.innerText;
+			targetstore.dispatch("setCap",parseCAP(addr));
+		}
+	},
+	props:{
+		store:{required:true},
+		paranum:{type:String,required:true}
+	},
+	render(h){
+		const showin=(this.store==mainstore)?"auxstore":"mainstore";
+		return h("button",{on:{click:this.click},attrs:{showin}},this.paranum);
+	}
+})
+const inlinenotebuttons=({h,cap,nid,note,forwardlink,props})=>{
 	let p=0;
 	const btns=[];
 	if (note) {
@@ -24,4 +45,4 @@ const inlinenotebtn=({h,cap,nid,note,forwardlink,props})=>{
 	return btns;
 }
 
-module.exports={inlinenotebtn};
+module.exports={inlinenotebuttons,ButtonPara};

@@ -1,6 +1,6 @@
-const {mainstore}=require("../store");
+const {mainstore}=require("./store");
 const {patterns,setBookMapping}=require("../ped-cite-pat");
-const {parsePTS}=require("../parseaddress");
+const {parsePTS,parseAddress}=require("../parseaddress");
 
 Vue.component("citation",{
 	props:{
@@ -9,7 +9,10 @@ Vue.component("citation",{
 	},
 	methods:{
 		click(){
-			const cap=parsePTS(this.label);
+			let cap=parsePTS(this.label);
+			if (typeof cap=="string") {
+				cap=parseAddress(cap);
+			}
 			mainstore.dispatch("setHighlight",this.headword.toLowerCase());
 			mainstore.dispatch("setCap",cap);
 		}

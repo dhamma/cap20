@@ -4,7 +4,7 @@ require("./ui/nav");
 require("./ui/dictionary");
 require("./ui/popup");
 
-const {mainstore,auxstore,dictstore}=require("./store");
+const {mainstore,auxstore,dictstore}=require("./ui/store");
 const {open,parseCAP,packintarr}=require("pengine");
 const quicklinks=[
 'dn2_156','sn5_421','an1_59','mn1_273'
@@ -15,7 +15,10 @@ new Vue({
 	state:Vuex.mapState(['cap'])
 	,mounted(){
 		open("cs0m",db=>{
-			const cap=parseCAP("an5_5",db);
+			//ja2a_x0 <p>{Vessantaraṃ}<p5.109>  not rendered
+			//ja2a_x1  {Vessantaraṃ} not rendered
+			//ja2a_x0 move backward , cannot move forward
+			const cap=parseCAP("dn2_156",db);
 			mainstore.dispatch("setCap",cap);
 
 			const history=mainstore.getters.history;
