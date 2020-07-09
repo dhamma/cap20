@@ -73,7 +73,8 @@ const actions = {
     })
   }
  ,setHighlight:({commit,state},hlw)=>{
- 	const regex=new RegExp("["+palialpha+"]","gi");
+  //remove non pali characters
+ 	const regex=new RegExp("["+palialpha+" ,]","gi");
  	let s='';
  	hlw.replace(regex,(m)=>s+=m);
  	commit("highlightword",s);

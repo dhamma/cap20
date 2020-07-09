@@ -24,9 +24,11 @@ vv(vatthu).(gatha), vv51.2=Maṇḍūkohaṃ(gatha 858)
 `.split(/\n/);
 
 const testptslink=`
-	@[Vin.iii.3]
-
-
+Akkhata	@[Pv.iv.11#1]
+Akkhāti	@[Pv.iv.1#63]
+Agada @[Mil.121], @[Mil.302], @[Mil.319],
+Agāra @[Cnd.172#ii]  
+Accagā @[Cnd.10]
 `
 const abbrs={
 mv:"MahaVagga",cv:"CūḷaVagga", pj:"Pārājika",pc:"Pācittiya",pvr:'Parivāra', 

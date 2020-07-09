@@ -1,0 +1,4 @@
+forward links and backlinks
+break into sentences
+find word explained in previous paragraph nti
+select a sentence , show operation (nissaya, similiar sentences)

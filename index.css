@@ -22,7 +22,7 @@ input.error {background:pink;}
 	margin-top:0.5em;margin-bottom:0.5em;margin-right:3px;
 	border:1px dotted #1C6EA4}
 
-.nti {font-weight: bold}
+.nti {font-weight: bold;cursor: pointer}
 .gatha {color:brown;}
 .linediv {border-bottom:solid 1px #E0E0E0;}
 .linediv_dict {border-bottom:solid 1px #A0A0A0;}

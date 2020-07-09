@@ -1,7 +1,8 @@
 'use strict';
 const {syllabify,isSyllable}=require("pengine");
-const {inlinenotebuttons,ButtonPara}=require("./inlinebuttons");
 
+const {inlinenotebuttons,ButtonPara}=require("./inlinebuttons");
+const {stylehandlers}=require("./handlers");
 const snip=(str,decoration)=>{
 	const arr=[];
 	for (var i=0;i<decoration.length;i++) {
@@ -62,7 +63,14 @@ const addspan=({children,str,prevclass,y,h})=>{
 	//	const links=prevclass.split(/ +/).filter(item=>item);
 	//	prevclass='';
 	//} 
-	if (str) children.push(h('span',{attrs:{y},class:prevclass},str));
+	const clss=prevclass.split(" ");
+	const on={}
+	clss.forEach(cls=>{
+		const click=stylehandlers[cls]||null;
+		if (click) on.click=click; //overwrite
+	});
+	
+	if (str) children.push(h('span',{attrs:{y},on,class:prevclass},str));
 	return prevclass;
 }
 
