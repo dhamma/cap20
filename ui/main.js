@@ -12,7 +12,7 @@ const checkselection=function(event){
 		bus.$emit("settofind",t);
 	}
 }
-const renderline=(store,h,x0,text)=>{
+const renderline=(store,h,x0,text,nline)=>{
 	const at=text.indexOf(NOTESEP);
 	if (at>0) text=text.substr(0,at);
 	let pts={};
@@ -21,7 +21,7 @@ const renderline=(store,h,x0,text)=>{
 	}
 	const highlightword=store.getters.highlightword;
 	const notes=store.getters.notes||{};
-	const decorated=decorateLine({h,x0,text,notes,pts,highlightword,store});
+	const decorated=decorateLine({h,x0,text,notes,pts,highlightword,store,nline});
 	return h('div',{class:"linediv",attrs:{x0}},decorated);
 }
 Vue.component("maintext",{
@@ -44,7 +44,7 @@ Vue.component("maintext",{
 	},
 	render(h) {
 		const store=this.store;
-  		const children=store.getters.texts.map(line=>renderline(store,h,line[0],line[1]))
+  		const children=store.getters.texts.map((line,idx)=>renderline(store,h,line[0],line[1],idx))
  		return  h("div",{class:"maintext",
  			on:{mouseup:checkselection.bind(store)}},children);
 	}

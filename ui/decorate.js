@@ -38,7 +38,7 @@ const decorateHeader=(header,textlen,decorations)=>{
 	headerstyle=header;
 	const p=parseFloat(headerstyle);
 	if (!isNaN(p)){
-		const m=header.match(/([\d\.]+)/)[1];
+		const m=header.match(/([\d\.\-]+)/)[1];
 		paranum=m;
 		headerstyle=headerstyle.substr(m.length);
 	}
@@ -73,9 +73,11 @@ const addspan=({children,str,prevclass,y,h})=>{
 	if (str) children.push(h('span',{attrs:{y},on,class:prevclass},str));
 	return prevclass;
 }
-
+let prevmarker=''; //prevent multiple output of same marker
 const addmarker=({children,str,y,h,cls})=>{
+	if (prevmarker==str) return;
 	children.push(h('span',{attrs:{y},class:cls}," ["+str+"]"));
+	prevmarker=str;
 }
 const decorateHighlightword=(line,hlw,decorations)=>{
  	if (!hlw) return;
@@ -91,13 +93,14 @@ const decorateHighlightword=(line,hlw,decorations)=>{
 	  	decorations.push([idx,m.length,"highlightword"]);
   	})
 }
-const decorateLine=({h,x0,text,notes,pts,highlightword,store})=>{
+const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
 	const decorations=[],children=[];
 	let syl_i=0,yinc=0,y=0,off=0,j=0,nsnip=0;
 	let prevclass='',str='',ch='',marker='';
-	const mheader=text.match(/^([a-z\d\.]+)\|/);
+	const mheader=text.match(/^([a-z\d\.\-]+)\|/);
 	let paranum='';
 
+	if (nline==0) prevmarker=''; //first line, reset marker
 	if (mheader) {
 		text=text.substr(mheader[0].length);
 		paranum=decorateHeader(mheader[1],text.length,decorations);
@@ -127,7 +130,7 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store})=>{
 				str='';
 			}
 			addmarker({h,children,str:pts[yinc],y:yinc,cls:"pb"});
-			delete pts[yinc];
+			//delete pts[yinc];
 		}
 
 		if (str=='') {

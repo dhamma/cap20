@@ -1,9 +1,6 @@
 'use strict';
 const {parseCAP,dbofbook}=require("pengine");
 const {parsePTS}=require("../cs0/ptsvolpg");
-const pts=(addr)=>{
-	return parsePTS(addr);
-}
 
 const findNos=(from,nos,T,d,depth)=>{
 	let cur=from;
@@ -69,7 +66,7 @@ const patterns=[
 	[/^([dmj])(\d+)$/i,dn_an_ja],
 	[/^s(\d+)\.(\d+)$/i,sn],
 	[/^vv(\d+)\.(\d+)$/i,vv],
-	[/^(\w+\d*,\d+)$/i,pts],
+	[/^(\w+\d*,\d+)$/i,parsePTS],
 ];
 
 const parseAddress=(str)=>{
@@ -83,4 +80,4 @@ const parseAddress=(str)=>{
 	}
 	return parseCAP(str);
 }
-module.exports={parseAddress,parsePTS};
+module.exports={parseAddress};
