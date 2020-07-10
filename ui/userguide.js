@@ -24,6 +24,8 @@ vv(vatthu).(gatha), vv51.2=Maṇḍūkohaṃ(gatha 858)
 `.split(/\n/);
 
 const testptslink=`
+@[AN.i.12]
+@[Ja.iv.324] @[Ja.vi.538]
 @[MN.i.338]
 Akkhata	@[Pv.iv.11#1]
 Akkhāti	@[Pv.iv.1#63]

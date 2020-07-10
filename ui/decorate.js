@@ -1,7 +1,7 @@
 'use strict';
-const {syllabify,isSyllable}=require("pengine");
+const {syllabify,isSyllable,hardBreak}=require("pengine");
 
-const {inlinenotebuttons,ButtonPara}=require("./inlinebuttons");
+const {inlinenotebuttons,ButtonPara,ButtonHardBreak}=require("./inlinebuttons");
 const {stylehandlers}=require("./handlers");
 const snip=(str,decoration)=>{
 	const arr=[];
@@ -58,7 +58,7 @@ const decorateBrace=(syl,decorations)=>{
 	}
 }
 
-const addspan=({children,str,prevclass,y,h})=>{
+const addspan=({sentencediv,str,prevclass,y,h})=>{
 	//if (prevclass&&prevclass.indexOf("~")>-1) {
 	//	const links=prevclass.split(/ +/).filter(item=>item);
 	//	prevclass='';
@@ -69,16 +69,26 @@ const addspan=({children,str,prevclass,y,h})=>{
 		const click=stylehandlers[cls]||null;
 		if (click) on.click=click; //overwrite
 	});
-	
-	if (str) children.push(h('span',{attrs:{y},on,class:prevclass},str));
+	if (!str)return prevclass;
+
+	let ele=h("span",{attrs:{y},on,class:prevclass},str);
+
+
+	sentencediv.push(ele);
 	return prevclass;
 }
 let prevmarker=''; //prevent multiple output of same marker
-const addmarker=({children,str,y,h,cls})=>{
-	if (prevmarker==str) return;
-	children.push(h('span',{attrs:{y},class:cls}," ["+str+"]"));
+const addmarker=({sentencediv,str,y,h,cls})=>{
+	if (prevmarker==str) return false;
+	sentencediv.push(h('span',{attrs:{y},class:cls},str));
 	prevmarker=str;
 }
+const addline=({h,sentencediv,linediv,y})=>{
+	sentencediv.unshift(h(ButtonHardBreak,{y}));
+	linediv.push( h("div",{class:"sentence"},sentencediv));
+	sentencediv.length=0;
+}
+
 const decorateHighlightword=(line,hlw,decorations)=>{
  	if (!hlw) return;
 
@@ -93,12 +103,15 @@ const decorateHighlightword=(line,hlw,decorations)=>{
 	  	decorations.push([idx,m.length,"highlightword"]);
   	})
 }
+
 const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
-	const decorations=[],children=[];
+	const decorations=[],sentencediv=[],linediv=[];
 	let syl_i=0,yinc=0,y=0,off=0,j=0,nsnip=0;
 	let prevclass='',str='',ch='',marker='';
 	const mheader=text.match(/^([a-z\d\.\-]+)\|/);
 	let paranum='';
+
+	text=hardBreak(text);
 
 	if (nline==0) prevmarker=''; //first line, reset marker
 	if (mheader) {
@@ -118,18 +131,18 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
 		}
 
 		if (nsnip<snippet.length&&snippet[nsnip][0]==j) {
-			addspan({h,children,str,prevclass,y});
+			addspan({h,sentencediv,str,prevclass,y});
 			str='';
 			prevclass=snippet[nsnip][1];
 			if (!prevclass) prevclass='';
 			nsnip++;
 		}
 		if (pts[yinc]) {
-			if (str) {
-				addspan({h,children,str,prevclass,y});
+			if (prevmarker!==pts[yinc] && str) {
+				addspan({h,sentencediv,str,prevclass,y});
 				str='';
 			}
-			addmarker({h,children,str:pts[yinc],y:yinc,cls:"pb"});
+			addmarker({h,sentencediv,str:pts[yinc],y:yinc,cls:"pb"});
 			//delete pts[yinc];
 		}
 
@@ -138,17 +151,22 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
 			y=yinc;
 		}
 		ch=text[j];
-		if (ch=="{"||ch=="}") ch='';
-		if (ch=="^"){
+		if (ch=="\n") { //hardbreak			
+			if (str) addspan({h,sentencediv,str,prevclass,y,breaker:true});
+			addline({h,sentencediv,linediv,y});
+			y=yinc;ch='';str='';
+		} else if (ch=="{"||ch=="}") {
+			ch='';
+		} else if (ch=="^"){
 			let num=j+1;
 			const m=text.substr(j+1).match(/(\d+)/);
 			j+=m[1].length;
-			addspan({h,children,str,prevclass,y});
+			addspan({h,sentencediv,str,prevclass,y});
 			prevclass='';
 			const props={};
 			let btns=inlinenotebuttons({h,nid:m[1],note:notes[x0+"_"+m[1]],props});
 			for (let k=0;k<btns.length;k++){
-				children.push(btns[k]);
+				sentencediv.push(btns[k]);
 			}
 			ch='';
 			str='';
@@ -158,11 +176,15 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
 		j++;
 		sycnt--;
 	}
-	addspan({h,children,str,y,prevclass});
+	
+	if (str) {
+		addspan({h,sentencediv,str,y,prevclass});
+		addline({h,sentencediv,linediv,y});
+	}
 
 	if (paranum) {
-		children.unshift(h(ButtonPara,{props:{paranum,store}}))
+		linediv.unshift(h(ButtonPara,{props:{paranum,store}}))
 	}
-	return children;
+	return linediv;
 }
 module.exports={decorateLine};

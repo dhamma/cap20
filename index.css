@@ -7,6 +7,8 @@ body{
 .candidates{font-size:90%;font-family:Tahoma;padding-bottom: 5px;
   padding-top:5px;overflow-y: scroll;max-height: 10em;
   background-color: white ;cursor:pointer;z-index: 99}
+.buttonhardbreak{ cursor:pointer;}
+.buttonhardbreak:hover{color:red;}
 
 .addresshinter{
   overflow-y:scroll;max-height: 10em;z-index: 99;
@@ -33,7 +35,8 @@ input.error {background:pink;}
 .linediv {border-bottom:solid 1px #E0E0E0;}
 .linediv_dict {border-bottom:solid 1px #A0A0A0;}
 .breadcrumb {border-radius:3px;background: #7F7F7F;color:white;cursor:pointer;}
-.pb{background-color:teal;color:white;font-size:75%;font-weight: bold}
+.pb{padding-left:2px;padding-right:2px;margin-left:3px;margin-right:3px;
+  background-color:teal;color:white;font-size:75%;font-weight: bold}
 #app {
   display: flex;
   flex-direction: row;

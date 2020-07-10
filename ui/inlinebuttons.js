@@ -2,13 +2,23 @@
 const {mainstore,auxstore,stores}=require("./store")
 const {parseCAP}=require("pengine");
 const {getRefBook}=require("../../cs0/ptsvolpg");
-
+const ButtonHardBreak=Vue.extend({
+	render(h){
+		return h("span",{class:"buttonhardbreak"},"▾");//⏷
+	}
+});
 const ButtonPara=Vue.extend({
 	methods:{
 		click(evt){
 			const ele=evt.target;
 			const targetstore=stores[ele.attributes.showin.value];
-			const addr=getRefBook(this.store.getters.cap.bk)+"_"+ele.innerText;
+
+			let _=ele.innerText;
+			_=_.replace(/-.*/,'');
+			const m=_.match(/(\d+)\.(\d+)/);
+			if (m) _=m[2]+'g'+m[1];
+
+			const addr=getRefBook(this.store.getters.cap.bk)+"_"+_;
 			targetstore.dispatch("setCap",parseCAP(addr));
 		}
 	},
@@ -45,4 +55,4 @@ const inlinenotebuttons=({h,cap,nid,note,forwardlink,props})=>{
 	return btns;
 }
 
-module.exports={inlinenotebuttons,ButtonPara};
+module.exports={inlinenotebuttons,ButtonPara,ButtonHardBreak};
