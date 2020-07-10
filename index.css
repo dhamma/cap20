@@ -7,6 +7,12 @@ body{
 .candidates{font-size:90%;font-family:Tahoma;padding-bottom: 5px;
   padding-top:5px;overflow-y: scroll;max-height: 10em;
   background-color: white ;cursor:pointer;z-index: 99}
+
+.addresshinter{
+  overflow-y:scroll;max-height: 10em;z-index: 99;
+  position:absolute;background-color:silver;
+  width:60%;right:0;
+}
 .floatright{float:right;}
 input.cap {width:6em;font-size:90%;font-family: Tahoma;}
 input.headword {width:18em;font-size:90%;font-family: Tahoma;}

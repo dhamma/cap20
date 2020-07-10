@@ -1,7 +1,8 @@
 'use strict';
 const {getancestor}=require("./tocpopup");
-const {stores}=require("./store");
+const {stores,addresshinterstore}=require("./store");
 const {parseAddress}=require("../parseaddress");
+const {AddressHinter}=require("./addresshint");
 const breadcrumb=Vue.extend({
 	props:['cap','openpopup'],
 	data(){
@@ -34,6 +35,7 @@ const parseAddr=(addr,db)=>{
 	}
 	return cap;
 }
+let hintertimer=0;
 Vue.component("CapNav",{
 	props:{
 		thestore:{type:String,required:true}
@@ -43,9 +45,20 @@ Vue.component("CapNav",{
 			parseInt(evt.target.attributes.idx.value))},
 		prevp:function(){this.store.dispatch("prevp")},
 		nextp:function(){this.store.dispatch("nextp")},
+		onblur(){
+			hintertimer=setTimeout( function (){
+				this.showaddresshinter=false
+			}.bind(this),500);
+		},
+		onfocus(){
+			clearTimeout(hintertimer);
+			addresshinterstore.dispatch("setAddress",this.capstr);
+			this.showaddresshinter=true;
+		},
 		oninput:function(event){
 			if (event.target.value!==this.address) {
 				this.address=event.target.value;
+				addresshinterstore.dispatch("setAddress",this.address);
 				this.$refs.address.classList.remove("error");
 				const cap=parseAddr(this.address,this.cap.db);
 				if (!cap) {
@@ -70,23 +83,31 @@ Vue.component("CapNav",{
 	},
 	data(){
 		const store=stores[this.thestore];
-		return {store,showpopup:false,popupitemdepth:0,address:''};
+		return {store,showpopup:false,popupitemdepth:0,address:''
+		,showaddresshinter:false};
 	},
 	computed:{
 		cap:function(){return this.store.getters.cap},
 		capstr:function(){return this.store.getters.capstr},
 		history:function(){return this.store.getters.history}
 	},
-	components:{'breadcrumb':breadcrumb},
+	components:{'breadcrumb':breadcrumb,'AddressHinter':AddressHinter},
 	template:`
 	<div class="cardnav">
 	<div class="floatright">
 		<span v-for="(item,idx) in history">
 			<button @click="goback" :idx="idx">{{item.stringify()}}</button>
 		</span>
+
+
 		<button @click="prevp">‹</button>
+
 		<input  class="cap" ref="address" 
+			@blur="onblur" @focus="onfocus"
 			v-bind:value="capstr" @keyup="oninput"></input>
+		<div v-if="showaddresshinter" class="addresshinter">
+			<AddressHinter/>
+		</div>
 		<button @click="nextp">›</button>
 	</div>
 	<breadcrumb :cap="cap"  :openpopup="openpopup"/>

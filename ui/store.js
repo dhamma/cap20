@@ -117,5 +117,22 @@ const dictstore = new Vuex.Store({
  state:_state2,
  getters, mutations, actions
 })
+const addresshinterstore = new Vuex.Store({
+  state:{
+    prefix:'',
+  },
+  mutations:{
+     prefix: (state, newprefix) => state.prefix=newprefix
+  },
+  getters:{
+    prefix: state => state.prefix
+  },
+  actions :{
+    setAddress: ({commit,state},address)=>{
+      commit("prefix", address.replace(/[,_.].*/,''));
+    }
+  }
+})
+
 const stores={mainstore,auxstore,dictstore};
-module.exports={mainstore,auxstore,dictstore,stores}
+module.exports={mainstore,auxstore,dictstore,addresshinterstore,stores}

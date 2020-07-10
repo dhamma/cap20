@@ -34,7 +34,7 @@ const qnum=(db,tocstart, depth,nos)=>{
 const sn=(samyutta,nos)=>{
 	const db=dbofbook("sn1");
 	const cur=qnum(db,'sn1_x0',3, samyutta);
-	if (!cur)return ;
+	if (cur<1)return ;
 	const T=db.toc;
 	const d=T[cur].d+1
 	const n=findNos(cur+1, nos, db.toc, d ,5);
@@ -50,11 +50,27 @@ const vv=(vatthu,gatha)=>{
 	const t=ans[ans.length-1];
 	const cur=findNos(t.cur+1,vatthu,db.toc,2,4); //find entire vv
 
-	if (!cur)return ;
+	if (cur<1)return ;
 	gatha=parseInt(gatha);//assuming one gatha per <p>
 	const cap=parseCAP(db.toc[cur].l);
 	return parseCAP(cap.x0 + gatha , db).stringify();
 }
+
+const pv=(vagga,vatthu,gatha)=>{
+	console.log('pv');
+	//cannot use qnum, as vatthu cross vagga 
+	const db=dbofbook("pv");
+	const cur=qnum(db,'pv_x2',3, vagga);
+
+	if (cur<1)return ;
+
+	const v=parseInt(cur)+parseInt(vatthu);
+
+	gatha=parseInt(gatha);//assuming one gatha per <p>
+	const cap=parseCAP(db.toc[v].l);
+	return parseCAP(cap.x0 + gatha , db).stringify();
+}
+
 
 const an=(book,nos)=>{
 	return parseCAP("an"+book+"_"+nos);
@@ -66,6 +82,7 @@ const patterns=[
 	[/^([dmj])(\d+)$/i,dn_an_ja],
 	[/^s(\d+)\.(\d+)$/i,sn],
 	[/^vv(\d+)\.(\d+)$/i,vv],
+	[/^pv(\d+)\.(\d+)\.(\d+)$/i,pv],
 	[/^(\w+\d*,\d+)$/i,parsePTS],
 ];
 
@@ -74,7 +91,7 @@ const parseAddress=(str)=>{
 		const pat=patterns[i];
 		const m=str.match(pat[0]);
 		if (!m) continue;
-		const leaf=pat[1](m[1],m[2]);
+		const leaf=pat[1](m[1],m[2],m[3]);
 		if (leaf) return leaf; 
 		else break;
 	}
