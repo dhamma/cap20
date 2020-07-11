@@ -10,7 +10,7 @@ const renderDictionaryLine=(h,text)=>{
 		const title=dictstore.getters.cap.stringify();
 		const m=text.match(/[\d]+-/);
 		headword=text.substr(2+m[0].length);
-		return h("div",{class:"entry",attrs:{title}},headword);
+		return [h("div",{class:"entry",attrs:{title}},headword)];
 	}
 
 	text.replace(/[@\^]\[(.+?)\]/g,(m,m1,idx)=>{

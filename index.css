@@ -7,9 +7,10 @@ body{
 .candidates{font-size:90%;font-family:Tahoma;padding-bottom: 5px;
   padding-top:5px;overflow-y: scroll;max-height: 10em;
   background-color: white ;cursor:pointer;z-index: 99}
-.buttonhardbreak{ cursor:pointer;}
+.buttonhardbreak{ padding:5px;cursor:pointer;color:silver;}
 .buttonhardbreak:hover{color:red;}
-
+.buttonhardbreak.has:hover{color:red;}
+.buttonhardbreak.has {color:black;}
 .addresshinter{
   overflow-y:scroll;max-height: 10em;z-index: 99;
   position:absolute;background-color:silver;
@@ -30,6 +31,7 @@ input.error {background:pink;}
 	margin-top:0.5em;margin-bottom:0.5em;margin-right:3px;
 	border:1px dotted #1C6EA4}
 
+.inlinenote{font-size:70%;color:blue;}
 .nti {font-weight: bold;cursor: pointer}
 .gatha {color:brown;}
 .linediv {border-bottom:solid 1px #E0E0E0;}
@@ -67,8 +69,6 @@ input.error {background:pink;}
   height:100vh;
   overflow-y:scroll;
 }
-
-
 
 .fullscreenpopup .ancestor{background:silver;cursor:pointer;}
 .fullscreenpopup .ancestor_active {background: yellow;cursor:pointer;}

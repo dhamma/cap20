@@ -7,7 +7,7 @@ require("./ui/popup");
 const {mainstore,auxstore,dictstore}=require("./ui/store");
 const {open,parseCAP,packintarr}=require("pengine");
 const quicklinks=[
-'dn2_156','sn5_421','an1_59','mn1_273'
+'dn2_218','sn5_1081','an2_20','mn1_273'
 ]
 new Vue({
 	//store,
@@ -18,7 +18,7 @@ new Vue({
 			//ja2a_x0 <p>{Vessantaraṃ}<p5.109>  not rendered
 			//ja2a_x1  {Vessantaraṃ} not rendered
 			//ja2a_x0 move backward , cannot move forward
-			const cap=parseCAP("sn5_421",db);
+			const cap=parseCAP("an2_34",db);
 			mainstore.dispatch("setCap",cap);
 
 			const history=mainstore.getters.history;

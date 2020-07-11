@@ -1,11 +1,5 @@
-parsePEDCite
-to CAP address
-
-pass to parseAddress
-	physical page (with ,) convert to nearest x0
-		cs0/ptsvolpg has less responsible.
-	logical, invoke qnum (parseAddress)
-
+toggle inlinenote
+show note with only forward link
 
 forward links and backlinks
 break into sentences

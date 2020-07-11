@@ -2,11 +2,7 @@
 const {mainstore,auxstore,stores}=require("./store")
 const {parseCAP}=require("pengine");
 const {getRefBook}=require("../../cs0/ptsvolpg");
-const ButtonHardBreak=Vue.extend({
-	render(h){
-		return h("span",{class:"buttonhardbreak"},"▾");//⏷
-	}
-});
+
 const ButtonPara=Vue.extend({
 	methods:{
 		click(evt){
@@ -54,5 +50,29 @@ const inlinenotebuttons=({h,cap,nid,note,forwardlink,props})=>{
 	}
 	return btns;
 }
-
-module.exports={inlinenotebuttons,ButtonPara,ButtonHardBreak};
+const InlineNoteButton=Vue.extend({
+	props:{
+		str:{type:String,required:true},
+		y:{type:Number},
+		x0:{type:Number},
+		notes:{type:Object}
+	},
+	render(h){
+		const str=this.notes[this.x0+"_"+this.str];
+		return h("span",{class:"inlinenote"}," "+str+" ");
+		/*
+		let num=j+1;
+		const m=text.substr(j+1).match(/(\d+)/);
+		j+=m[1].length;
+		sentence.push({y,class:prevclass,str});
+		prevclass='';
+		const props={};
+		let btns=inlinenotebuttons({h,nid:m[1],note:notes[x0+"_"+m[1]],props});
+		for (let k=0;k<btns.length;k++){
+			sentence.push(btns[k]);
+		}
+		*/
+	}
+})
+const ButtonDef={InlineNoteButton}
+module.exports={ButtonDef,ButtonPara};
