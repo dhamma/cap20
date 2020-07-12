@@ -39,7 +39,7 @@ const decorateHighlightword=(decorations,line,hlw)=>{
 	line.replace(regex,(m,idx)=>decorations.push([idx,m.length,"highlightword"]));
 }
 const extractInlinenote=(text,inlinenotes)=>{
-	return text.replace(/ *\^(\d+) */g,(m,n,idx)=>{
+	return text.replace(/ \^(\d+)/g,(m,n,idx)=>{
 		inlinenotes.push([idx,n]);
 		return " ";
 	});

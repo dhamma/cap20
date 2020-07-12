@@ -28,27 +28,26 @@ const ButtonPara=Vue.extend({
 	}
 })
 const inlinenotebuttons=({h,cap,nid,note,forwardlink,props})=>{
-	let p=0;
-	const btns=[];
-	if (note) {
-		note.trim().replace(/#(.+?);/g,(m,addr)=>{
-			//const tcap=parseCAP(matlabel(addr));
-			//const label=makecanonref(tcap);
-			//highlight the source range when button is click
-			//const quotecap=getsourcequote(addr,tcap,cap);
-			//const _props=Object.assign({addr,label,
-			//	command:this.command,
-			//	displayline:-1,quotecap,forwardlink},props);			
-			//btns.push(h('forwardlink',{props:_props}));
-			btns.push(h('button',addr));
-		})
-		if (!btns.length){
-			const _props=Object.assign({id:nid,note},props);
-			//btns.push(h('notebutton',{props:_props}));
-			btns.push(h('button',{},note));
-		}
-	}
-	return btns;
+	let p=0,str='',prev=0;
+	const children=[];
+
+	note.trim().replace(/\(?#(.+?);\)?/g,(m,addr,idx)=>{
+		//const tcap=parseCAP(matlabel(addr));
+		str=note.substr(prev,idx);
+		str&&children.push(h('span',{},str));
+		const label=addr;
+		//highlight the source range when button is click
+		//const quotecap=getsourcequote(addr,tcap,cap);
+		//const _props=Object.assign({addr,label,
+		//	command:this.command,
+		//	displayline:-1,quotecap,forwardlink},props);			
+		children.push(h('span',{class:'forwardlink'},label));
+		prev=idx+m.length;
+	})
+	str=note.substr(prev);
+	str&&children.push(h('span',{class:'inlinenote'},str));
+	
+	return children;
 }
 const InlineNoteButton=Vue.extend({
 	props:{
@@ -58,20 +57,12 @@ const InlineNoteButton=Vue.extend({
 		notes:{type:Object}
 	},
 	render(h){
-		const str=this.notes[this.x0+"_"+this.str];
-		return h("span",{class:"inlinenote"}," "+str+" ");
-		/*
-		let num=j+1;
-		const m=text.substr(j+1).match(/(\d+)/);
-		j+=m[1].length;
-		sentence.push({y,class:prevclass,str});
-		prevclass='';
-		const props={};
-		let btns=inlinenotebuttons({h,nid:m[1],note:notes[x0+"_"+m[1]],props});
-		for (let k=0;k<btns.length;k++){
-			sentence.push(btns[k]);
-		}
-		*/
+		const note=this.notes[this.x0+"_"+this.str];
+		//return h("span",{class:"inlinenote"}," "+str+" ");
+
+		let btns=inlinenotebuttons({h,nid:this.str,note});
+
+		return h("span",{class:"inlinenote"},btns);
 	}
 })
 const ButtonDef={InlineNoteButton}

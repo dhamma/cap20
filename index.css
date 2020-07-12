@@ -31,7 +31,12 @@ input.error {background:pink;}
 	margin-top:0.5em;margin-bottom:0.5em;margin-right:3px;
 	border:1px dotted #1C6EA4}
 
-.inlinenote{font-size:70%;color:blue;}
+.subhead {font-size:110%;color: brown;}
+.title  {font-size:120%;color:brown;}
+
+.inlinenote{padding-left:5px;padding-right:5px;
+  font-size:80%;background:lightgreen}
+.forwardlink {text-decoration: underline;cursor: pointer}
 .nti {font-weight: bold;cursor: pointer}
 .gatha {color:brown;}
 .linediv {border-bottom:solid 1px #E0E0E0;}
