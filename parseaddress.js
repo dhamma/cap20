@@ -17,7 +17,10 @@ const findNos=(from,nos,T,d,depth)=>{
 }
 const dn_an_ja=(book,nos)=>{
 	nos=parseInt(nos);
-	const addr=tocstart[book];
+	let addr=tocstart[book];
+	if (nos>520 &&book=="j") {
+		addr=tocstart["j2"];
+	}
 	if (!addr)return null;
 	const db=dbofbook("dn1");
 	const n= qnum(db,addr[0],addr[1],nos);
@@ -75,7 +78,8 @@ const pv=(vagga,vatthu,gatha)=>{
 const an=(book,nos)=>{
 	return parseCAP("an"+book+"_"+nos);
 }
-const tocstart={d:['dn1_x0',3],m:['mn1_x0',4],j:['ja1_x2',4]};
+const tocstart={d:['dn1_x0',3],m:['mn1_x0',4],
+j:['ja1_x2',4],j2:['ja2_x2',4]};
 
 const patterns=[
 	[/^a([123456789][01]?)\.(\d+)$/i,an],
