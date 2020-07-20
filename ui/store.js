@@ -42,6 +42,10 @@ const getters = {
  ,capstr:state=> state.cap?state.cap.stringify():''
  ,texts: state=>state.texts
  ,notes: state=>getnotes(state.texts)
+ ,backlinks:state=>{
+    if (!state.cap || !state.cap.db)return [];
+    return state.cap.db.getbacklinks(state.cap.stringify())||[];
+ }
  ,pts: state=>{
     if (!state.cap)return {};
     return PTSinRange(state.cap.db,state.displayfrom,state.displayline);

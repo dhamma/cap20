@@ -78,6 +78,13 @@ const pv=(vagga,vatthu,gatha)=>{
 const an=(book,nos)=>{
 	return parseCAP("an"+book+"_"+nos);
 }
+const kv=katha=>{
+	const db=dbofbook("kv");
+	const v=qnum(db,'kv_x2',4, parseInt(katha));
+	if (v<1)return
+
+	return parseCAP(db.toc[v].l).stringify(); 
+}
 const tocstart={d:['dn1_x0',3],m:['mn1_x0',4],
 j:['ja1_x2',4],j2:['ja2_x2',4]};
 
@@ -86,6 +93,7 @@ const patterns=[
 	[/^([dmj])(\d+)$/i,dn_an_ja],
 	[/^s(\d+)\.(\d+)$/i,sn],
 	[/^vv(\d+)\.(\d+)$/i,vv],
+	[/^kv(\d+)$/i,kv],
 	[/^pv(\d+)\.(\d+)\.(\d+)$/i,pv],
 	[/^(\w+\d*,\d+)$/i,parsePTS],
 ];

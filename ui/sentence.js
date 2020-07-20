@@ -68,7 +68,7 @@ const Sentence=Vue.extend({
 	},
 	render(h){
 		const children=[];
-		let mi=0, markers=this.markers,x0=this.x0;;
+		let mi=0, markers=this.markers,x0=this.x0;
 		this.data.forEach(span=>{
 			const y=span.y,end=span.end;
 			const clss=span.class.split(" ");

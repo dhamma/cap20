@@ -19,11 +19,12 @@ const decorateHeader=(decorations,header,textlen)=>{
 const decorateBrace=(decorations,syl)=>{
 	let bold=0,off=0,y=0;
 	for (let j=0;j<syl.length;j++){
+		// syl[n]=="}{" is possible
+		if (syl[j].trim()[0]=="}"){
+			decorations.push([bold,off-bold,"nti"]);
+		}
 		if (syl[j][syl[j].length-1]=="{") {
 			bold=off+syl[j].length;
-		}
-		if (syl[j].trim()=="}"){
-			decorations.push([bold,off-bold,"nti"]);
 		}
 		off+=syl[j].length;
 	}

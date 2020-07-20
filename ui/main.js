@@ -44,6 +44,8 @@ Vue.component("maintext",{
 	},
 	render(h) {
 		const store=this.store;
+		const backlinks=store.getters.backlinks;
+
   		const children=store.getters.texts.map((line,idx)=>renderline(store,h,line[0],line[1],idx))
  		return  h("div",{class:"maintext",
  			on:{mouseup:checkselection.bind(store)}},children);
