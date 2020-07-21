@@ -12,7 +12,15 @@ const checkselection=function(event){
 		bus.$emit("settofind",t);
 	}
 }
+const linebacklink=(store,x0)=>{
+	const backlinks=store.getters.backlinks;
+	if (!backlinks || backlinks.length==0)return [];
+	
+	return backlinks.filter(link=>link[0].x0==x0);
+}
 const renderline=(store,h,x0,text,nline)=>{
+	const backlinks=linebacklink(store,x0);
+	
 	const at=text.indexOf(NOTESEP);
 	if (at>0) text=text.substr(0,at);
 	let pts={};
@@ -21,7 +29,7 @@ const renderline=(store,h,x0,text,nline)=>{
 	}
 	const highlightword=store.getters.highlightword;
 	const notes=store.getters.notes||{};
-	const decorated=decorateLine({h,x0,text,notes,pts,highlightword,store,nline});
+	const decorated=decorateLine({h,x0,text,notes,pts,highlightword,store,nline,backlinks});
 	return h('div',{class:"linediv",attrs:{x0}},decorated);
 }
 Vue.component("maintext",{
@@ -44,9 +52,8 @@ Vue.component("maintext",{
 	},
 	render(h) {
 		const store=this.store;
-		const backlinks=store.getters.backlinks;
-
-  		const children=store.getters.texts.map((line,idx)=>renderline(store,h,line[0],line[1],idx))
+  		const children=store.getters.texts.map(
+  			(line,idx)=>renderline(store,h,line[0],line[1],idx))
  		return  h("div",{class:"maintext",
  			on:{mouseup:checkselection.bind(store)}},children);
 	}

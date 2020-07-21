@@ -44,7 +44,10 @@ const getters = {
  ,notes: state=>getnotes(state.texts)
  ,backlinks:state=>{
     if (!state.cap || !state.cap.db)return [];
-    return state.cap.db.getbacklinks(state.cap.stringify())||[];
+    const links=state.cap.db.getbacklinks(state.cap.stringify())||[];
+    return links.map(link=>{
+      return [ parseCAP(link[0]), link[1] ,link[0]];
+    })
  }
  ,pts: state=>{
     if (!state.cap)return {};

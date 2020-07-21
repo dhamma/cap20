@@ -36,6 +36,9 @@ input.error {background:pink;}
 
 .inlinenote{padding-left:5px;padding-right:5px;
   font-size:80%;background:lightgreen}
+.backlink {border-radius:4px;
+  margin-left:2px;font-size:80%;
+  background:silver;border:solid 1px silver;cursor:pointer;}
 .forwardlink {text-decoration: underline;cursor: pointer}
 .nti {font-weight: bold;cursor: pointer}
 .gatha {color:brown;}

@@ -31,16 +31,20 @@ const inlinenotebuttons=({h,cap,nid,note,forwardlink,props})=>{
 	let p=0,str='',prev=0;
 	const children=[];
 
+	const show=(note.indexOf("-")>-1);
 	note.trim().replace(/\(?#(.+?);\)?/g,(m,addr,idx)=>{
 		//const tcap=parseCAP(matlabel(addr));
-		str=note.substr(prev,idx);
+		str=note.substring(prev,idx);
 		str&&children.push(h('span',{},str));
 		const label=addr;
 		//highlight the source range when button is click
 		//const quotecap=getsourcequote(addr,tcap,cap);
 		//const _props=Object.assign({addr,label,
 		//	command:this.command,
-		//	displayline:-1,quotecap,forwardlink},props);			
+		//	displayline:-1,quotecap,forwardlink},props);	
+		if(show){
+			console.log(label,str)
+		}		
 		children.push(h('span',{class:'forwardlink'},label));
 		prev=idx+m.length;
 	})
@@ -49,6 +53,7 @@ const inlinenotebuttons=({h,cap,nid,note,forwardlink,props})=>{
 	
 	return children;
 }
+
 const InlineNoteButton=Vue.extend({
 	props:{
 		str:{type:String,required:true},
@@ -65,5 +70,22 @@ const InlineNoteButton=Vue.extend({
 		return h("span",{class:"inlinenote"},btns);
 	}
 })
-const ButtonDef={InlineNoteButton}
+const BacklinkButton=Vue.extend({
+	props:{
+		str:{type:String,required:true},
+		y:{type:Number},
+		x0:{type:Number},
+		zlen:{type:Number}
+	},
+	methods:{
+		click(){
+			auxstore.dispatch("setCap",this.str);
+		}
+	},
+	render(h){
+		const label=this.str.replace(/_.+/,'');
+		return h("span",{class:"backlink",on:{click:this.click}},label);
+	}
+})
+const ButtonDef={InlineNoteButton,BacklinkButton};
 module.exports={ButtonDef,ButtonPara};

@@ -3,49 +3,25 @@ const {syllabify,isSyllable,hardBreak}=require("pengine");
 const {ButtonPara}=require("./inlinebuttons");
 const {Sentence}=require("./sentence");
 const {snip}=require("./snip");
-const decorateHeader=(decorations,header,textlen)=>{
-	let paranum=null;
-	let headerstyle='';
-	headerstyle=header;
-	const p=parseFloat(headerstyle);
-	if (!isNaN(p)){
-		const m=header.match(/([\d\.\-]+)/)[1];
-		paranum=m;
-		headerstyle=headerstyle.substr(m.length);
-	}
-	if (headerstyle) decorations.push([0,textlen,headerstyle]);
-	return paranum;
-}
-const decorateBrace=(decorations,syl)=>{
-	let bold=0,off=0,y=0;
-	for (let j=0;j<syl.length;j++){
-		// syl[n]=="}{" is possible
-		if (syl[j].trim()[0]=="}"){
-			decorations.push([bold,off-bold,"nti"]);
-		}
-		if (syl[j][syl[j].length-1]=="{") {
-			bold=off+syl[j].length;
-		}
-		off+=syl[j].length;
-	}
-}
-const decorateHighlightword=(decorations,line,hlw)=>{
- 	if (!hlw) return;
-	hlw=hlw.substr(0,hlw.length-1)+".";
- 	hlw=hlw.replace(/ṅ/g,'[ṃnṅ]');
- 	hlw=hlw.replace(/[āa]/g,'[āa]');
- 	hlw=hlw.replace(/[ūu]/g,'[ūu]');
- 	hlw=hlw.replace(/[īi]/g,'[īi]');
-	const regex=new RegExp(hlw,"gi");
-	line.replace(regex,(m,idx)=>decorations.push([idx,m.length,"highlightword"]));
-}
+const {decoHeader,decoBrace,decoHighlightword}=require("./decoration");
 const extractInlinenote=(text,inlinenotes)=>{
 	return text.replace(/ \^(\d+)/g,(m,n,idx)=>{
 		inlinenotes.push([idx,n]);
 		return " ";
 	});
 }
-const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
+const backlink2marker=backlinks=>{
+	const blmarkers=[];
+	backlinks.forEach(item=>{
+		const cap=item[0];
+		const origaddr=item[1];
+		const pos=cap.y+cap.z;
+		if (!blmarkers[pos]) blmarkers[pos]=[];
+		blmarkers[pos].push( cap.z+"|"+origaddr );
+	})
+	return blmarkers;
+}
+const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline,backlinks})=>{
 	const decorations=[],linediv=[],notepos=[];
 	let sentence=[],markers=[];
 	let syl_i=0,yinc=0,y=0,off=0,j=0,nsnip=0;
@@ -53,16 +29,18 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
 	const mheader=text.match(/^([a-z\d\.\-]+)\|/);
 	if (mheader) {
 		text=text.substr(mheader[0].length);
-		paranum=decorateHeader(decorations,mheader[1],text.length);
+		paranum=decoHeader(decorations,mheader[1],text.length);
 	}
 	pts=Object.assign({},pts);
 	text=hardBreak(text);
 	text=extractInlinenote(text,notepos);
 
 	const syl=syllabify(text);	
-	decorateBrace(decorations,syl);
-	decorateHighlightword(decorations,text,highlightword);
-	
+	decoBrace(decorations,syl);
+	decoHighlightword(decorations,text,highlightword);
+
+	const bls=backlink2marker(backlinks);
+
 	const snippet=snip(text,decorations);
 	let nsyl=syl[0].length, ii=0;
 	while(j<=text.length){
@@ -79,6 +57,13 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline})=>{
 		if (pts[yinc]) {
 			markers.push({str:pts[yinc],y:yinc,class:"pb"});
 			delete pts[yinc];
+		}
+		if (bls[yinc]) {
+			bls[yinc].forEach(linkstr=>{
+				const arr=linkstr.split("|");
+				markers.push({str:arr[1],y:yinc,class:"$BacklinkButton",zlen:parseInt(arr[0])});
+			})
+			delete bls[yinc];
 		}
 		if (ii<notepos.length && j>=notepos[ii][0]) {
 			markers.push({str:notepos[ii][1],y:yinc,class:"$InlineNoteButton"});

@@ -31,7 +31,7 @@ const spanwithmarkers=({h,span,on,children,markers,notes,x0})=>{
 	let mi=0;
 	let M=markers[mi];
 	for (var i=0;i<syl.length;i++) {
-		if (M&&M.y==yinc) {
+		while (M&&M.y==yinc) {
 			str&&children.push(h("span",{attrs:{y:yinc},class:span.class,on},str));
 			if (M.class[0]=="$") {
 				const BTN=ButtonDef[M.class.substr(1)];
@@ -64,7 +64,7 @@ const Sentence=Vue.extend({
 		}
 	},
 	data(){
-		return {showmarker:false}
+		return {showmarker:true}
 	},
 	render(h){
 		const children=[];
