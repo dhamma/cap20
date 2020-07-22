@@ -13,6 +13,24 @@ const decoHeader=(decorations,header,textlen)=>{
 	if (headerstyle) decorations.push([0,textlen,headerstyle]);
 	return paranum;
 }
+const decoYZ=(decorations,cap,syl)=>{
+	if (!(cap.y || cap.z))return;
+	let off=0,yinc=0,start=0;
+
+	for (let j=0;j<syl.length;j++){
+		off+=syl[j].length;
+		if (cap.y==yinc&&start==0) {
+			start=off;
+		}
+		if (cap.y+cap.z==yinc) {
+			decorations.push([start,off-start,"highlightyz"]);
+			break; 
+		}
+		if (isSyllable(syl[j])) yinc++;
+
+	}
+
+}
 const decoBrace=(decorations,syl)=>{
 	let bold=0,off=0,y=0;
 	for (let j=0;j<syl.length;j++){
@@ -26,7 +44,7 @@ const decoBrace=(decorations,syl)=>{
 		off+=syl[j].length;
 	}
 }
-const decoHighlightword=(decorations,line,hlw)=>{
+const decoHLWord=(decorations,line,hlw)=>{
  	if (!hlw) return;
 	hlw=hlw.substr(0,hlw.length-1)+".";
  	hlw=hlw.replace(/ṅ/g,'[ṃnṅ]');
@@ -34,6 +52,10 @@ const decoHighlightword=(decorations,line,hlw)=>{
  	hlw=hlw.replace(/[ūu]/g,'[ūu]');
  	hlw=hlw.replace(/[īi]/g,'[īi]');
 	const regex=new RegExp(hlw,"gi");
+
+	line.replace(regex,(m,idx)=>{
+		decorations.push([idx,m.length,"highlightword"]);
+	})
 }
 
-module.exports={decoHighlightword,decoBrace,decoHeader};
+module.exports={decoHLWord,decoBrace,decoHeader,decoYZ};

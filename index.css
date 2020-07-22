@@ -23,6 +23,7 @@ input.error {background:pink;}
 .citation {font-family:Consolas;color:blue;}
 .citation:hover {text-decoration: underline;cursor:pointer;}
 .highlightx0{background-color: yellow}
+.highlightyz{background-color:lightblue;}
 .highlightword{background-color: lightblue}
 .panel{background-color: silver}
 .abbr {color:blue;font-family: Tahoma}
@@ -34,12 +35,12 @@ input.error {background:pink;}
 .subhead {font-size:110%;color: brown;}
 .title  {font-size:120%;color:brown;}
 
-.inlinenote{padding-left:5px;padding-right:5px;
+.inlinenote{padding-left:2px;padding-right:2px;
   font-size:80%;background:lightgreen}
-.backlink {border-radius:4px;
+.backlink {font-weight:bold;
   margin-left:2px;font-size:80%;
-  background:silver;border:solid 1px silver;cursor:pointer;}
-.forwardlink {text-decoration: underline;cursor: pointer}
+  border-bottom:double 3px green;cursor:pointer;}
+.forwardlink {font-weight:bold;text-decoration: underline;cursor: pointer}
 .nti {font-weight: bold;cursor: pointer}
 .gatha {color:brown;}
 .linediv {border-bottom:solid 1px #E0E0E0;}

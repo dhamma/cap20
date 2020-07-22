@@ -3,6 +3,7 @@ const {readlines,parseCAP,palialpha}=require("pengine");
 const {getnotes}=require("./notes");
 const {PTSinRange}=require("../../cs0/ptsvolpg");
 const _state0 = {
+  name:"mainstore",
   keep:false,
   history:[],
   cap:null,
@@ -10,6 +11,7 @@ const _state0 = {
   highlightword:''
 } 
 const _state1 = {
+  name:"auxstore",
   cap:null,
   texts:[],
   history:[],
@@ -19,6 +21,7 @@ const _state1 = {
   displayline:0,
 } 
 const _state2={
+  name:"dictstore",
   cap:null,
   texts:[],
 	history:[],
@@ -37,7 +40,8 @@ const mutations = {
 
 const getters = {
  cap: state => state.cap
- ,history:state=>state.history
+ ,name:state=>state.name
+ ,history:state=>(state.cap&&state.cap.db.toc)?state.history:[]
  ,highlightword:state=>state.highlightword
  ,capstr:state=> state.cap?state.cap.stringify():''
  ,texts: state=>state.texts
@@ -57,7 +61,7 @@ const getters = {
 const actions = {
  setCap: ({commit,state},cap)=>{
  	if (typeof cap=="string" || typeof cap=="number") {
- 		cap=parseCAP(cap,state.cap.db);
+ 		cap=parseCAP(cap);
  	}
  	if (!cap) return;
 	if (state.keep&&state.cap) {
@@ -67,11 +71,12 @@ const actions = {
 		commit( "keep", false);
 	}
   let from=cap.x0-cap.x,nline=cap._w;
-  if (cap.x) {
+  if (cap.y||cap.z) {
+    from=cap.x0, nline=1;
+  } else if (cap.x) {
     const n=cap.nextp();
     from=cap.x0,nline=cap._w-cap.x+n._w;
   }
-
   readlines(cap.db,from,nline,(texts)=>{
       commit("displayfrom",from);
       commit("displayline",nline);

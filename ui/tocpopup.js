@@ -1,8 +1,5 @@
 'use strict';
 const {parseCAP}=require("pengine");
-const getancestor=cap=>{
-	return cap.db.gettocancestor(cap.stringify());
-}
 
 const Siblings=Vue.extend({
 	props:['cap','firstsibling','thissibling','onselect'],
@@ -55,7 +52,7 @@ const Siblings=Vue.extend({
 	}
 
 })
-Vue.component('tocitempopup',{
+const TocItemPopup=Vue.extend({
 	props:{
 		'cap':{required:true},
 		'depth':{type:Number},
@@ -94,7 +91,7 @@ Vue.component('tocitempopup',{
 		return {curcap:this.cap,curdepth:this.depth||0};
 	},
 	render(h){
-		const ancestor=getancestor(this.curcap);
+		const ancestor=this.curcap.db.gettocancestor(this.curcap.stringify());
 		const toc=this.curcap.db.toc;
 		
 		let curitem=ancestor.filter(item=>item.d>=this.curdepth)[0];
@@ -135,4 +132,4 @@ Vue.component('tocitempopup',{
 	}
 })
 
-module.exports={getancestor}
+module.exports={TocItemPopup}

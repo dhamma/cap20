@@ -1,8 +1,9 @@
 'use strict';
-const {getancestor}=require("./tocpopup");
+const {TocItemPopup}=require("./tocpopup");
 const {stores,addresshinterstore}=require("./store");
 const {parseAddress}=require("../parseaddress");
 const {AddressHinter}=require("./addresshint");
+const {capTitle}=require("./inlinebuttons");
 const breadcrumb=Vue.extend({
 	props:['cap','openpopup'],
 	data(){
@@ -10,7 +11,7 @@ const breadcrumb=Vue.extend({
 	},
 	render(h){
 		if (!this.cap || !this.cap.db.toc)return;
-		const ancestor=getancestor(this.cap);
+		const ancestor=this.cap.db.gettocancestor(this.cap.stringify());
 		const ancestorspan=ancestor.map((item,idx)=>{
 			let t=item.t;
 			let title='';
@@ -36,6 +37,19 @@ const parseAddr=(addr,db)=>{
 	return cap;
 }
 let hintertimer=0;
+
+const HistoryButton=Vue.extend({
+	props:{
+		idx:{type:Number,required:true},
+		cap:{type:Object,required:true},
+		click:{type:Function,required:true}
+	},
+	render(h){
+		return h("button",{attrs:{title:capTitle(this.cap),
+			idx:this.idx}
+		 ,on:{click:this.click}}, this.cap.stringify())
+	}
+})
 Vue.component("CapNav",{
 	props:{
 		thestore:{type:String,required:true}
@@ -91,14 +105,13 @@ Vue.component("CapNav",{
 		capstr:function(){return this.store.getters.capstr},
 		history:function(){return this.store.getters.history}
 	},
-	components:{'breadcrumb':breadcrumb,'AddressHinter':AddressHinter},
+	components:{TocItemPopup,breadcrumb,HistoryButton,AddressHinter},
 	template:`
 	<div class="cardnav">
 	<div class="floatright">
-		<span v-for="(item,idx) in history">
-			<button @click="goback" :idx="idx">{{item.stringify()}}</button>
+		<span v-for="(cap,idx) in history">
+			<HistoryButton :click="goback" :idx="idx" :cap="cap" />
 		</span>
-
 
 		<button @click="prevp">‹</button>
 
@@ -112,7 +125,7 @@ Vue.component("CapNav",{
 	</div>
 	<breadcrumb :cap="cap"  :openpopup="openpopup"/>
 
-	<tocitempopup v-if="showpopup" :cap="cap" 
+	<TocItemPopup v-if="showpopup" :cap="cap" 
 	:depth="popupitemdepth" :onselecttocitem="onselecttocitem"/>
 	</div>
 	`

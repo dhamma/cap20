@@ -3,7 +3,7 @@ const {syllabify,isSyllable,hardBreak}=require("pengine");
 const {ButtonPara}=require("./inlinebuttons");
 const {Sentence}=require("./sentence");
 const {snip}=require("./snip");
-const {decoHeader,decoBrace,decoHighlightword}=require("./decoration");
+const {decoHeader,decoBrace,decoHLWord,decoYZ}=require("./decoration");
 const extractInlinenote=(text,inlinenotes)=>{
 	return text.replace(/ \^(\d+)/g,(m,n,idx)=>{
 		inlinenotes.push([idx,n]);
@@ -35,9 +35,10 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline,backlinks})=>
 	text=hardBreak(text);
 	text=extractInlinenote(text,notepos);
 
-	const syl=syllabify(text);	
+	const syl=syllabify(text);
+	decoYZ(decorations,store.getters.cap,syl);
 	decoBrace(decorations,syl);
-	decoHighlightword(decorations,text,highlightword);
+	decoHLWord(decorations,text,highlightword);
 
 	const bls=backlink2marker(backlinks);
 
@@ -76,7 +77,7 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline,backlinks})=>
 		ch=text[j];
 		if (ch=="\n") { //hardbreak			
 			if (str) sentence.push({y,end:yinc,class:prevclass,str});
-			linediv.push(h(Sentence,{props:{markers,notes,data:sentence,x0}}));
+			linediv.push(h(Sentence,{props:{markers,store,notes,data:sentence,x0}}));
 			markers=[];
 			y=yinc;
 			ch='';str='';sentence=[];markers=[];
@@ -88,7 +89,7 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline,backlinks})=>
 	}
 	if (str) {
 		sentence.push({y,end:yinc,class:prevclass,str});
-		linediv.push(h(Sentence,{props:{markers,notes,x0,data:sentence}}));
+		linediv.push(h(Sentence,{props:{store,markers,notes,x0,data:sentence}}));
 	}
 	if (paranum) {
 		linediv.unshift(h(ButtonPara,{props:{paranum,store}}))

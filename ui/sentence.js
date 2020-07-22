@@ -25,7 +25,7 @@ const ButtonHardBreak=Vue.extend({
 		class:"buttonhardbreak"+has},"▾");//⏷
 	}
 });
-const spanwithmarkers=({h,span,on,children,markers,notes,x0})=>{
+const spanwithmarkers=({h,span,store,on,children,markers,notes,x0})=>{
 	const syl=syllabify(span.str);
 	let yinc=span.y,str='';
 	let mi=0;
@@ -38,7 +38,7 @@ const spanwithmarkers=({h,span,on,children,markers,notes,x0})=>{
 				if (!BTN) {
 					console.error("button type not found",M.class);
 				}
-				children.push( h(BTN,{props:{x0,str:M.str,y:yinc,notes}}));
+				children.push( h(BTN,{props:{store,x0,str:M.str,y:yinc,notes}}));
 			} else {
 				children.push(h("span",{class:M.class},M.str));
 			}
@@ -56,6 +56,7 @@ const Sentence=Vue.extend({
 		x0:{type:Number,required:true},
 		data:{type:Array,required:true},
 		markers:{type:Array,required:true},
+		store:{type:Object,required:true},
 		notes:{type:Object}
 	},
 	methods:{
@@ -78,7 +79,8 @@ const Sentence=Vue.extend({
 				if (click) on.click=click; //overwrite
 			});
 			if (markers.length && this.showmarker) {
-				spanwithmarkers({h,span,on,children,markers,notes,x0});
+				spanwithmarkers({h,store:this.store
+					,span,on,children,markers,notes,x0});
 			} else {
 				children.push( h("span",{class:span.class,on,
 					attrs:{y:span.y}},span.str));				
