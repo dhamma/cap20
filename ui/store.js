@@ -71,11 +71,13 @@ const actions = {
 		commit( "keep", false);
 	}
   let from=cap.x0-cap.x,nline=cap._w;
-  if (cap.y||cap.z) {
-    from=cap.x0, nline=1;
-  } else if (cap.x) {
-    const n=cap.nextp();
-    from=cap.x0,nline=cap._w-cap.x+n._w;
+  if (cap.db.name.substr(0,3)=="cs0"){
+    if (cap.y||cap.z) {
+      from=cap.x0, nline=1;
+    } else if (cap.x) {
+      const n=cap.nextp();
+      from=cap.x0,nline=cap._w-cap.x+n._w;
+    }
   }
   readlines(cap.db,from,nline,(texts)=>{
       commit("displayfrom",from);
