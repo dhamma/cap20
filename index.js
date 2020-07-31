@@ -30,7 +30,7 @@ new Vue({
 		});
 		
 		open("cs0a",db=>{
-			const cap=parseCAP("ne0a_5g3x3",db);
+			const cap=parseCAP("pj0a_x0",db);
 			auxstore.dispatch("setCap",cap);
 		});
 

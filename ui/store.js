@@ -58,6 +58,7 @@ const getters = {
     return PTSinRange(state.cap.db,state.displayfrom,state.displayline);
   }
 }
+const MAXFETCHLINES=10;
 const actions = {
  setCap: ({commit,state},cap)=>{
  	if (typeof cap=="string" || typeof cap=="number") {
@@ -75,10 +76,11 @@ const actions = {
     if (cap.y||cap.z) {
       from=cap.x0, nline=1;
     } else if (cap.x) {
-      const n=cap.nextp();
+      const n=cap.nextp(MAXFETCHLINES);
       from=cap.x0,nline=cap._w-cap.x+n._w;
     }
   }
+  if (nline>MAXFETCHLINES) nline=MAXFETCHLINES;
   readlines(cap.db,from,nline,(texts)=>{
       commit("displayfrom",from);
       commit("displayline",nline);
@@ -106,12 +108,12 @@ const actions = {
  	dispatch("setCap",cap[0]);
  }
  ,nextp: ({dispatch,state,commit}) => {
- 	const newcap=state.cap.nextp();
+ 	const newcap=state.cap.nextp(MAXFETCHLINES);
  	commit("keep",false);
  	dispatch("setCap",newcap);
  }
  ,prevp: ({dispatch,state,commit}) => {
- 	const newcap=state.cap.prevp();
+ 	const newcap=state.cap.prevp(MAXFETCHLINES);
 	
  	commit("keep",false);
  	dispatch("setCap",newcap);
