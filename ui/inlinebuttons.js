@@ -1,7 +1,7 @@
 'use strict';
 const {mainstore,auxstore,stores}=require("./store")
 const {parseCAP}=require("pengine");
-const {getRefBook}=require("../../cs0/ptsvolpg");
+
 const oppositeStore=store=>(store==mainstore)?auxstore:mainstore;
 const capTitle=cap=>{
 	if (!cap.db.toc)return '';
@@ -19,30 +19,29 @@ const capTitle=cap=>{
 	}).filter(item=>item);
 	return arr.join("/");
 }
-const ButtonPara=Vue.extend({
+
+const ButtonRef=Vue.extend({
 	methods:{
 		click(evt){
-			const ele=evt.target;
-			const targetstore=stores[ele.attributes.showin.value];
-
-			let _=ele.innerText;
-			_=_.replace(/-.*/,'');
-			const m=_.match(/(\d+)\.(\d+)/);
-			if (m) _=m[2]+'g'+m[1];
-
-			const addr=getRefBook(this.store.getters.cap.bk)+"_"+_;
-			targetstore.dispatch("setCap",parseCAP(addr));
+			const attrs=evt.target.attributes;
+			const targetstore=stores[attrs.showin.value];
+			const db=attrs.db?attrs.db.value:null;
+			targetstore.dispatch("setCap",parseCAP(attrs.addr.value,db));
 		}
 	},
 	props:{
 		store:{required:true},
-		paranum:{type:String,required:true}
+		db:{type:String},
+		label:{type:String,required:true},
+		addr:{type:String,required:true}
 	},
 	render(h){
 		const showin=oppositeStore(this.store).getters.name;
-		return h("button",{on:{click:this.click},attrs:{showin}},this.paranum);
+		return h("button",{on:{click:this.click}
+			,attrs:{showin,db:this.db,addr:this.addr}},this.label);
 	}
 })
+
 const inlinenotebuttons=({h,store,cap,nid,note,forwardlink,props})=>{
 	let p=0,str='',prev=0;
 	const children=[];
@@ -114,4 +113,4 @@ const BacklinkButton=Vue.extend({
 	}
 })
 const ButtonDef={InlineNoteButton,BacklinkButton};
-module.exports={ButtonDef,ButtonPara,capTitle};
+module.exports={ButtonDef,ButtonRef,capTitle};

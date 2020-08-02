@@ -5,7 +5,7 @@ require("./ui/dictionary");
 require("./ui/popup");
 
 const {mainstore,auxstore,dictstore}=require("./ui/store");
-const {open,parseCAP,packintarr}=require("pengine");
+const {open,parseCAP,packintarr,readlines}=require("pengine");
 const quicklinks=[
 'dn2_218','sn5_1081','an2_20','mn1_273'
 ]
@@ -18,7 +18,7 @@ new Vue({
 			//ja2a_x0 <p>{Vessantaraṃ}<p5.109>  not rendered
 			//ja2a_x1  {Vessantaraṃ} not rendered
 			//ja2a_x0 move backward , cannot move forward
-			const cap=parseCAP("mn1_274",db);
+			const cap=parseCAP("dn2_218",db);
 			mainstore.dispatch("setCap",cap);
 
 			const history=mainstore.getters.history;
@@ -33,7 +33,6 @@ new Vue({
 			const cap=parseCAP("pj0a_x0",db);
 			auxstore.dispatch("setCap",cap);
 		});
-
 		open("sc0ped",db=>{
 			db.payload=db.payload.split("\n");
 			db.extra.headwordx0=packintarr.unpack3(db.extra.headwordx0);

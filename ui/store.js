@@ -72,7 +72,7 @@ const actions = {
 		commit( "keep", false);
 	}
   let from=cap.x0-cap.x,nline=cap._w;
-  if (cap.db.name.substr(0,3)=="cs0"){
+  if (cap.db.name!=="sc0ped"){
     if (cap.y||cap.z) {
       from=cap.x0, nline=1;
     } else if (cap.x) {
