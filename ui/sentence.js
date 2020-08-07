@@ -1,7 +1,8 @@
 const {stylehandlers}=require("./handlers");
 const {ButtonDef}=require("./inlinebuttons");
-const {syllabify,isSyllable}=require("pengine");
+const {syllabify,isSyllable,regPaliword,bsearch}=require("pengine");
 //render null tag, break span
+const knowntokens=require("../knowntokens");
 
 const ButtonHardBreak=Vue.extend({
 	props:{
@@ -51,6 +52,19 @@ const spanwithmarkers=({h,span,store,on,children,markers,notes,x0})=>{
 	str&&children.push(h("span",{attrs:{y:yinc},class:span.class,on},str));
 }
 
+const splitwords=({h,span,on})=>{
+	const spans=[];
+	const hastoken=tk=>{
+		return bsearch(knowntokens,tk.toLowerCase())>=0;
+	}
+	const arr=span.str.split(regPaliword)
+		.map(tk=>hastoken(tk)?h("span",{class:"knowntoken"},
+			[h("ruby",{},[ h("rb",tk),h("rt","中")])] )
+		:tk);
+
+	return h("span",{class:span.class,on,
+					attrs:{y:span.y}},arr);
+}
 const Sentence=Vue.extend({
 	props:{
 		x0:{type:Number,required:true},
@@ -65,7 +79,7 @@ const Sentence=Vue.extend({
 		}
 	},
 	data(){
-		return {showmarker:true}
+		return {showmarker:false}
 	},
 	render(h){
 		const children=[];
@@ -82,14 +96,18 @@ const Sentence=Vue.extend({
 				spanwithmarkers({h,store:this.store
 					,span,on,children,markers,notes,x0});
 			} else {
-				children.push( h("span",{class:span.class,on,
-					attrs:{y:span.y}},span.str));				
+				children.push(h("span",{on},span.str));
+				//children.push( splitwords({h,span,on}));				
 			}
 		});
 
 		const bhb=h(ButtonHardBreak,{props:{hasmarker:!!markers.length,
 								onenter:this.onenter}});
-		children.unshift(bhb);	
+		children.unshift(bhb);
+		const linenote=this.notes[this.x0];
+		if (this.showmarker && linenote ) {
+			children.push(h('span',{class:"linenote"},linenote));
+		}
 
 		return h("div",{class:"sentence"},children);
 	}

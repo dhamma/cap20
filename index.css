@@ -1,7 +1,7 @@
 body{
   margin:0 0;
 }
-
+.knowntoken {color:green;}
 .cardnav {width:100%;position: sticky;top:0px;}
 .dictpanel {position:sticky;top:0px;}
 .candidates{font-size:90%;font-family:Tahoma;padding-bottom: 5px;
@@ -37,12 +37,13 @@ input.error {background:pink;}
 
 .inlinenote{padding-left:2px;padding-right:2px;
   font-size:80%;background:lightgreen}
+.linenote {font-size:80%;color:darkgreen;padding-left:5px;}
 .backlink {font-weight:bold;
   margin-left:2px;font-size:80%;
   border-bottom:double 3px green;cursor:pointer;}
 .forwardlink {font-weight:bold;text-decoration: underline;cursor: pointer}
 .nti {font-weight: bold;cursor: pointer}
-.gatha {color:brown;}
+.gatha {text-decoration:underline}
 .linediv {border-bottom:solid 1px #E0E0E0;}
 .linediv_dict {border-bottom:solid 1px #A0A0A0;}
 .breadcrumb {border-radius:3px;background: #7F7F7F;color:white;cursor:pointer;}

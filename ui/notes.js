@@ -9,8 +9,12 @@ const getnotes=rawtext=>{
 			notestext=item[1].substr(at2+3);
 		} else return ;
 		const ns=notestext.split(/(\d+)\^/).filter(item=>item);
-		for (var i=0;i<ns.length>>1;i++) {
-			notes[x0+"_"+ns[i*2]]=ns[i*2+1];
+		if (ns.length==1) {
+			notes[x0]=ns;
+		} else {
+			for (var i=0;i<ns.length>>1;i++) {
+				notes[x0+"_"+ns[i*2]]=ns[i*2+1];
+			}			
 		}
 	})
 	return notes;

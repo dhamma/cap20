@@ -1,5 +1,7 @@
+'use strict'
 const {isSyllable,parseCAP}=require("pengine");
-
+const {ButtonRef}=require("./inlinebuttons");
+const {getRefBook}=require("../../cs0/ptsvolpg");
 const decoHeader=(decorations,header,textlen)=>{
 	let paranum=null;
 	let headerstyle='';
@@ -57,5 +59,23 @@ const decoHLWord=(decorations,line,hlw)=>{
 		decorations.push([idx,m.length,"highlightword"]);
 	})
 }
+const decorateParanum=({store,h,linediv,paranum})=>{
+	if (!paranum) return;
 
-module.exports={decoHLWord,decoBrace,decoHeader,decoYZ};
+	if (store.getters.cap.db.name=="cs0m") {
+		const db="sc0m";
+		const addr=store.getters.cap.bk+"_"+paranum;
+		if (parseCAP(addr,db)) {
+			linediv.unshift(h(ButtonRef,{props:{addr,db:"sc0m",store,label:"sc"}}))
+		}
+	}
+
+	let _=paranum.replace(/-.*/,'');
+	const m=_.match(/(\d+)\.(\d+)/);
+	if (m) _=m[2]+'g'+m[1];
+	const addr=getRefBook(store.getters.cap.bk)+"_"+_;
+	const tik_addr=addr.replace("a_","t_");
+	parseCAP(tik_addr)&& linediv.unshift(h(ButtonRef,{props:{addr:tik_addr,store,label:'tik'}}));
+	parseCAP(addr)&& linediv.unshift(h(ButtonRef,{props:{addr,store,label:'att'}}));
+}
+module.exports={decoHLWord,decoBrace,decoHeader,decoYZ,decorateParanum};

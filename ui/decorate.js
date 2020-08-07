@@ -1,12 +1,10 @@
 'use strict';
 const {syllabify,isSyllable,hardBreak,parseCAP}=require("pengine");
-const {ButtonRef}=require("./inlinebuttons");
 const {Sentence}=require("./sentence");
 const {snip}=require("./snip");
-const {getRefBook}=require("../../cs0/ptsvolpg");
-const {decoHeader,decoBrace,decoHLWord,decoYZ}=require("./decoration");
+const {decoHeader,decoBrace,decoHLWord,decoYZ,decorateParanum}=require("./decoration");
 const extractInlinenote=(text,inlinenotes)=>{
-	return text.replace(/ \^(\d+)/g,(m,n,idx)=>{
+	return text.replace(/ ?\^(\d+)/g,(m,n,idx)=>{
 		inlinenotes.push([idx,n]);
 		return " ";
 	});
@@ -22,24 +20,6 @@ const backlink2marker=backlinks=>{
 	})
 	return blmarkers;
 }
-const decorateParanum=({store,h,linediv,paranum})=>{
-	if (!paranum) return;
-
-	if (store.getters.cap.db.name=="cs0m") {
-		const db="sc0m";
-		const addr=store.getters.cap.bk+"_"+paranum;
-		if (parseCAP(addr,db)) {
-			linediv.unshift(h(ButtonRef,{props:{addr,db:"sc0m",store,label:"en"}}))
-		}
-	}
-
-	let _=paranum.replace(/-.*/,'');
-	const m=_.match(/(\d+)\.(\d+)/);
-	if (m) _=m[2]+'g'+m[1];
-	const addr=getRefBook(store.getters.cap.bk)+"_"+_;
-	linediv.unshift(h(ButtonRef,{props:{addr,store,label:_}}))
-}
-
 const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline,backlinks})=>{
 	const decorations=[],linediv=[],notepos=[];
 	let sentence=[],markers=[];
@@ -113,8 +93,4 @@ const decorateLine=({h,x0,text,notes,pts,highlightword,store,nline,backlinks})=>
 	decorateParanum({store,h,linediv,paranum});
 	return linediv;
 }
-
-
-
-			
 module.exports={decorateLine};

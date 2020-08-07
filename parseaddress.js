@@ -98,7 +98,7 @@ const patterns=[
 	[/^(\w+\d*,\d+)$/i,parsePTS],
 ];
 
-const parseAddress=(str)=>{
+const parseAddress=str=>{
 	for (var i=0;i<patterns.length;i++) {
 		const pat=patterns[i];
 		const m=str.match(pat[0]);

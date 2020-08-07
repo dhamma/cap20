@@ -18,7 +18,7 @@ new Vue({
 			//ja2a_x0 <p>{Vessantaraṃ}<p5.109>  not rendered
 			//ja2a_x1  {Vessantaraṃ} not rendered
 			//ja2a_x0 move backward , cannot move forward
-			const cap=parseCAP("dn2_218",db);
+			const cap=parseCAP("dn1_3",db);
 			mainstore.dispatch("setCap",cap);
 
 			const history=mainstore.getters.history;
@@ -33,6 +33,7 @@ new Vue({
 			const cap=parseCAP("pj0a_x0",db);
 			auxstore.dispatch("setCap",cap);
 		});
+		open("cs0t");
 		open("sc0ped",db=>{
 			db.payload=db.payload.split("\n");
 			db.extra.headwordx0=packintarr.unpack3(db.extra.headwordx0);
