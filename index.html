@@ -2,9 +2,24 @@
 <meta charset="UTF-8">
 <script src="vue.js"></script>
 <script src="vuex.js"></script>
+<script>
+  var path = '.';
+  if (typeof require!=='undefined' && typeof process!=='undefined') {
+	  const fs=require("fs");//run under nw
+	  global.undernw=true; //browserify override process variable
+	  const opts={};//{recursive:true}
+	   var reloadWatcher=fs.watch(path, opts,function() {
+	    location.reload();
+	    for(var i in require.cache) delete require.cache[i];
+	    //reloadWatcher.close();
+	  });
+  }
+</script>
+
 <link href="index.css" rel="stylesheet">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CAP</title>
 <body>
 	<div id="app">
 		<div class="left-container">
